@@ -34,13 +34,14 @@ echo ========================================
 echo   PORTFOLIO INICIADO CORRECTAMENTE
 echo ========================================
 echo.
-echo Backend API: http://localhost:5001
+echo Backend API: http://localhost:5000
 echo Frontend: Abierto en tu navegador
 echo Panel Admin: admin\login.html
 echo.
-echo Credenciales de login:
-echo   Usuario: admin
-echo   Password: admin123
+echo IMPORTANTE: Usa las credenciales que creaste con 'npm run create-admin'
+echo Si no creaste un usuario, ejecuta:
+echo   cd backend
+echo   npm run create-admin
 echo.
 echo Presiona cualquier tecla para abrir el panel admin...
 pause >nul
