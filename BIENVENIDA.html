@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a tu Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, rgba(131, 56, 236, 0.3) 100%);
+            color: #ffffff;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ff006e, #06ffa5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        
+        .intro {
+            background: rgba(26, 10, 62, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid #8338ec;
+            margin-bottom: 2rem;
+        }
+        
+        .steps {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .step {
+            background: rgba(26, 10, 62, 0.6);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #06ffa5;
+        }
+        
+        .step h2 {
+            color: #06ffa5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step code {
+            background: rgba(13, 2, 33, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: block;
+            margin: 0.5rem 0;
+            color: #ff006e;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .link-card {
+            background: rgba(26, 10, 62, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #8338ec;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .link-card:hover {
+            border-color: #06ffa5;
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(6, 255, 165, 0.3);
+        }
+        
+        .link-card h3 {
+            color: #ff006e;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .link-card p {
+            color: #b8c1ec;
+        }
+        
+        .warning {
+            background: rgba(255, 51, 102, 0.2);
+            border: 2px solid #ff3366;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .success {
+            background: rgba(6, 255, 165, 0.2);
+            border: 2px solid #06ffa5;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        ul {
+            margin-left: 2rem;
+            margin-top: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            color: #b8c1ec;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Portfolio Profesional Estilo GTA 6</h1>
+        
+        <div class="intro">
+            <h2>✅ Proyecto Creado Exitosamente</h2>
+            <p style="color: #b8c1ec; font-size: 1.1rem; margin-top: 1rem;">
+                Tu portfolio completo con frontend, backend, panel de administración y base de datos está listo para usar.
+                Seguí estos pasos para ponerlo en marcha.
+            </p>
+        </div>
+        
+        <div class="success">
+            <strong>✨ Lo que acabás de obtener:</strong>
+            <ul>
+                <li>Frontend público con diseño estilo GTA 6 (neón, gradientes, animaciones)</li>
+                <li>Panel de administración privado para gestionar proyectos</li>
+                <li>Backend API REST con Node.js + Express</li>
+                <li>Base de datos MongoDB</li>
+                <li>Sistema de autenticación con JWT</li>
+                <li>Carga dinámica de proyectos (sin tocar código)</li>
+            </ul>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <h2>1️⃣ Instalar dependencias</h2>
+                <p>Abrí PowerShell en esta carpeta y ejecutá:</p>
+                <code>npm run install:all</code>
+                <p style="margin-top: 0.5rem; color: #b8c1ec;">Esto instala todo lo necesario (puede tardar 2-3 minutos)</p>
+            </div>
+            
+            <div class="step">
+                <h2>2️⃣ Iniciar MongoDB</h2>
+                <p>Abrí OTRA terminal de PowerShell y ejecutá:</p>
+                <code>mongod</code>
+                <p style="margin-top: 0.5rem; color: #b8c1ec;">Dejá esta terminal abierta mientras trabajás</p>
+            </div>
+            
+            <div class="step">
+                <h2>3️⃣ Crear usuario administrador</h2>
+                <p>En la terminal principal, ejecutá:</p>
+                <code>cd backend</code>
+                <code>npm run create-admin</code>
+                <p style="margin-top: 0.5rem; color: #b8c1ec;">Usuario: admin | Contraseña: admin123</p>
+            </div>
+            
+            <div class="step">
+                <h2>4️⃣ Iniciar el backend</h2>
+                <p>Desde la carpeta backend:</p>
+                <code>npm run dev</code>
+                <p style="margin-top: 0.5rem; color: #b8c1ec;">Backend corriendo en http://localhost:5000</p>
+            </div>
+            
+            <div class="step">
+                <h2>5️⃣ Abrir el frontend</h2>
+                <p>Opción recomendada: Instalá "Live Server" en VS Code</p>
+                <p style="margin-top: 0.5rem;">Click derecho en <strong>frontend/index.html</strong> → "Open with Live Server"</p>
+                <p style="margin-top: 0.5rem; color: #b8c1ec;">O simplemente abrí frontend/index.html en tu navegador</p>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Importante:</strong>
+            <ul>
+                <li>Necesitás tener Node.js instalado (https://nodejs.org/)</li>
+                <li>Necesitás tener MongoDB instalado o usar MongoDB Atlas</li>
+                <li>Cambiá las credenciales de admin después del primer login</li>
+            </ul>
+        </div>
+        
+        <h2 style="text-align: center; color: #06ffa5; margin: 3rem 0 2rem;">📁 Archivos Importantes</h2>
+        
+        <div class="links">
+            <a href="frontend/index.html" class="link-card">
+                <h3>🌐 Portfolio Público</h3>
+                <p>Tu web principal con diseño GTA 6</p>
+            </a>
+            
+            <a href="admin/login.html" class="link-card">
+                <h3>🔐 Panel Admin</h3>
+                <p>Login y gestión de proyectos</p>
+            </a>
+            
+            <a href="INICIO-RAPIDO.md" class="link-card">
+                <h3>⚡ Inicio Rápido</h3>
+                <p>Guía paso a paso resumida</p>
+            </a>
+            
+            <a href="INSTALACION.md" class="link-card">
+                <h3>📖 Instalación Completa</h3>
+                <p>Documentación detallada</p>
+            </a>
+            
+            <a href="PROYECTOS-EJEMPLO.md" class="link-card">
+                <h3>📝 Proyectos Ejemplo</h3>
+                <p>Textos listos para copiar</p>
+            </a>
+            
+            <a href="README.md" class="link-card">
+                <h3>📚 README</h3>
+                <p>Información general del proyecto</p>
+            </a>
+        </div>
+        
+        <div class="intro" style="margin-top: 3rem; text-align: center;">
+            <h2>🎯 Flujo de Trabajo</h2>
+            <p style="margin-top: 1rem; font-size: 1.1rem;">
+                Login → Panel Admin → Nuevo Proyecto → Completar Formulario → Publicar
+            </p>
+            <p style="margin-top: 1rem; color: #06ffa5; font-weight: bold;">
+                ✅ El proyecto aparece automáticamente en tu portfolio público
+            </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(26, 10, 62, 0.6); border-radius: 15px;">
+            <h3 style="color: #ff006e; margin-bottom: 1rem;">¿Necesitás ayuda?</h3>
+            <p style="color: #b8c1ec;">Revisá los archivos de documentación o la consola del navegador (F12) si algo no funciona</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,423 @@
+/* ===== ESTILOS ADMIN PANEL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --neon-pink: #ff006e;
+    --neon-purple: #8338ec;
+    --neon-cyan: #06ffa5;
+    --dark-bg: #0d0221;
+    --dark-card: #1a0a3e;
+    --text-white: #ffffff;
+    --text-gray: #b8c1ec;
+    --error-red: #ff3366;
+    --success-green: #06ffa5;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-white);
+    line-height: 1.6;
+}
+
+/* ===== LOGIN PAGE ===== */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, rgba(131, 56, 236, 0.2) 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.login-box {
+    background: rgba(26, 10, 62, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 3rem;
+    border-radius: 20px;
+    border: 2px solid var(--neon-purple);
+    box-shadow: 0 0 30px rgba(131, 56, 236, 0.3);
+}
+
+.login-box h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--text-gray);
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--neon-cyan);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(13, 2, 33, 0.6);
+    border: 2px solid var(--neon-purple);
+    border-radius: 8px;
+    color: var(--text-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(6, 255, 165, 0.3);
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 110, 0.5);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 0, 110, 0.8);
+}
+
+.error-message {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid var(--error-red);
+    border-radius: 8px;
+    color: var(--error-red);
+    text-align: center;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--neon-cyan);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--neon-pink);
+}
+
+/* ===== ADMIN NAVBAR ===== */
+.admin-navbar {
+    background: rgba(13, 2, 33, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    border-bottom: 2px solid var(--neon-purple);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-navbar .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-navbar h2 {
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.admin-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 2px solid var(--error-red);
+    color: var(--error-red);
+    padding: 0.5rem 1.5rem;
+}
+
+.btn-logout:hover {
+    background: var(--error-red);
+    color: white;
+}
+
+/* ===== ADMIN CONTAINER ===== */
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 20px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+    color: var(--neon-cyan);
+}
+
+/* ===== PROJECTS ADMIN LIST ===== */
+.projects-admin-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.project-admin-card {
+    background: rgba(26, 10, 62, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 2px solid var(--neon-purple);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+}
+
+.project-admin-card:hover {
+    border-color: var(--neon-cyan);
+    transform: translateX(5px);
+}
+
+.project-info-admin {
+    flex: 1;
+}
+
+.project-info-admin h3 {
+    color: var(--neon-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.project-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-status {
+    background: rgba(6, 255, 165, 0.2);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+}
+
+.badge-category {
+    background: rgba(131, 56, 236, 0.2);
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+}
+
+.badge-unpublished {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid var(--error-red);
+    color: var(--error-red);
+}
+
+.project-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: rgba(6, 255, 165, 0.2);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+}
+
+.btn-edit:hover {
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+}
+
+.btn-delete {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid var(--error-red);
+    color: var(--error-red);
+}
+
+.btn-delete:hover {
+    background: var(--error-red);
+    color: white;
+}
+
+/* ===== MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: rgba(26, 10, 62, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--neon-purple);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+    color: var(--neon-cyan);
+}
+
+.close {
+    color: var(--text-gray);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    color: var(--error-red);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 2px solid var(--text-gray);
+    color: var(--text-gray);
+}
+
+.btn-cancel:hover {
+    border-color: var(--error-red);
+    color: var(--error-red);
+}
+
+.loading {
+    text-align: center;
+    color: var(--neon-cyan);
+    padding: 2rem;
+    font-size: 1.2rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .project-admin-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .project-actions {
+        flex-direction: row;
+        width: 100%;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+}

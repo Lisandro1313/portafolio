@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin Panel</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <nav class="admin-navbar">
+        <div class="container">
+            <h2>Panel de Administración</h2>
+            <div class="admin-nav-links">
+                <span id="admin-user">Admin</span>
+                <button id="logoutBtn" class="btn btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Mis Proyectos</h1>
+            <button id="newProjectBtn" class="btn btn-primary">+ Nuevo Proyecto</button>
+        </div>
+
+        <!-- Lista de proyectos -->
+        <div id="projects-list" class="projects-admin-list">
+            <div class="loading">Cargando proyectos...</div>
+        </div>
+    </div>
+
+    <!-- Modal para crear/editar proyecto -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Proyecto</h2>
+                <span class="close">&times;</span>
+            </div>
+            
+            <form id="projectForm">
+                <input type="hidden" id="projectId">
+                
+                <div class="form-group">
+                    <label for="title">Título del Proyecto *</label>
+                    <input type="text" id="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="problem">Problema *</label>
+                    <textarea id="problem" rows="3" required placeholder="Descripción clara del problema real que existía"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="solution">Solución *</label>
+                    <textarea id="solution" rows="3" required placeholder="Sistema / plataforma que desarrollaste para resolverlo"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="result">Resultado *</label>
+                    <textarea id="result" rows="3" required placeholder="Beneficio concreto logrado (mejora de tiempos, reducción de errores, etc)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="technologies">Tecnologías (separadas por coma) *</label>
+                    <input type="text" id="technologies" required placeholder="Ej: React, Node.js, MongoDB, Express">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="status">Estado *</label>
+                        <select id="status" required>
+                            <option value="En producción">En producción</option>
+                            <option value="En pruebas">En pruebas</option>
+                            <option value="Demo funcional">Demo funcional</option>
+                            <option value="Operativo">Operativo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Categoría *</label>
+                        <select id="category" required>
+                            <option value="Web">Web</option>
+                            <option value="App">App</option>
+                            <option value="IA">IA</option>
+                            <option value="Automatización">Automatización</option>
+                            <option value="Sistema">Sistema</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="videoUrl">URL de Video (opcional)</label>
+                    <input type="url" id="videoUrl" placeholder="https://youtube.com/...">
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="published" checked>
+                        Publicar inmediatamente
+                    </label>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-cancel" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

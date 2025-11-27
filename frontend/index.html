@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Full Stack Developer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">DEV</div>
+            <ul class="nav-links">
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#about">Sobre Mí</a></li>
+                <li><a href="#projects">Proyectos</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+            <a href="/admin/login.html" class="btn-login">Admin</a>
+        </div>
+    </nav>
+
+    <!-- HOME - Portada -->
+    <section id="home" class="hero">
+        <div class="hero-background"></div>
+        <div class="container">
+            <h1 class="glitch" data-text="Desarrollo sistemas reales que funcionan en la vida real">
+                Desarrollo sistemas reales que funcionan en la vida real
+            </h1>
+            <p class="hero-subtitle">
+                Full Stack Developer • Plataformas Web • Automatización • IA Aplicada • Sistemas de Gestión
+            </p>
+            <p class="hero-description">
+                Transformo ideas en productos digitales funcionales, seguros y escalables. 
+                Trabajo sobre problemas reales y soluciones concretas, desde la arquitectura hasta la puesta en producción.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">Ver Proyectos</a>
+                <a href="#contact" class="btn btn-secondary">Contactar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE MÍ -->
+    <section id="about" class="section about">
+        <div class="container">
+            <h2 class="section-title">Sobre Mí</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        Soy desarrollador de software con experiencia en la creación de sistemas que hoy están 
+                        en uso real en áreas como <strong>gestión pública, salud, educación, automatización</strong> 
+                        y <strong>plataformas administrativas</strong>.
+                    </p>
+                    <p>
+                        Me especializo en construir aplicaciones completas, desde el frontend hasta el backend, 
+                        integrando bases de datos, autenticación, automatización de procesos e inteligencia artificial aplicada.
+                    </p>
+                    
+                    <h3>Trabajo con un enfoque claro:</h3>
+                    <ul class="features-list">
+                        <li>✅ Resolver problemas reales</li>
+                        <li>✅ Crear sistemas usables</li>
+                        <li>✅ Garantizar seguridad y estabilidad</li>
+                        <li>✅ Pensar en escalabilidad desde el inicio</li>
+                    </ul>
+
+                    <p>
+                        He trabajado tanto de manera independiente como en contextos institucionales, lo que me permitió 
+                        entender no solo la parte técnica, sino también la lógica operativa de los sistemas.
+                    </p>
+
+                    <h3>Cómo Trabajo:</h3>
+                    <ul class="work-method">
+                        <li>✅ Entender el problema antes de escribir una sola línea de código</li>
+                        <li>✅ Diseñar soluciones simples pero robustas</li>
+                        <li>✅ Priorizar la experiencia del usuario</li>
+                        <li>✅ Pensar siempre en seguridad y escalabilidad</li>
+                        <li>✅ Documentar y mantener los proyectos en el tiempo</li>
+                    </ul>
+
+                    <p>
+                        <strong>Mi objetivo no es solo "que funcione", sino que el sistema sea confiable, mantenible y útil en el día a día.</strong>
+                    </p>
+
+                    <div class="looking-for">
+                        <h3>Qué Tipo de Trabajo Busco:</h3>
+                        <p>Actualmente me encuentro abierto a oportunidades como:</p>
+                        <ul>
+                            <li>• Full Stack Developer</li>
+                            <li>• Backend Developer</li>
+                            <li>• Desarrollador de plataformas web</li>
+                            <li>• Sistemas de gestión</li>
+                            <li>• Automatización e IA aplicada</li>
+                        </ul>
+                        <p><strong>Modalidades:</strong> Trabajo remoto • Híbrido • Por proyecto</p>
+                        <p>Me interesa formar parte de equipos donde el producto tenga impacto real y uso concreto.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROYECTOS -->
+    <section id="projects" class="section projects">
+        <div class="container">
+            <h2 class="section-title">Proyectos</h2>
+            <div id="projects-grid" class="projects-grid">
+                <!-- Los proyectos se cargan dinámicamente desde el backend -->
+                <div class="loading">Cargando proyectos...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contact" class="section contact">
+        <div class="container">
+            <h2 class="section-title">Contacto</h2>
+            <div class="contact-content">
+                <p class="contact-intro">
+                    ¿Tenés una propuesta, proyecto o búsqueda de desarrollador?
+                </p>
+                <p>Podés contactarme directamente por:</p>
+                
+                <div class="contact-buttons">
+                    <a href="mailto:tu-email@ejemplo.com" class="btn btn-contact">
+                        📧 Email
+                    </a>
+                    <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="btn btn-contact">
+                        💼 LinkedIn
+                    </a>
+                    <a href="https://wa.me/tunumero" target="_blank" class="btn btn-contact">
+                        📱 WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Portfolio. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
