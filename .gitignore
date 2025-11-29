@@ -15,6 +15,10 @@ build/
 uploads/
 !uploads/.gitkeep
 
+# Data (JSON database)
+backend/data/*.json
+!backend/data/.gitkeep
+
 # Logs
 *.log
 npm-debug.log*

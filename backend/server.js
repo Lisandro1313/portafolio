@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
@@ -13,13 +12,10 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Conexión a MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('✅ MongoDB conectado'))
-    .catch(err => {
-        console.error('❌ Error conectando a MongoDB:', err.message);
-        console.log('⚠️  Asegurate de que MongoDB esté corriendo: mongod');
-    });// Rutas
+// Mensaje de inicio
+console.log('✅ Sistema de archivos JSON listo');
+
+// Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 

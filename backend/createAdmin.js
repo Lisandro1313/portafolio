@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const readline = require('readline');
 require('dotenv').config();
@@ -18,10 +17,7 @@ const question = (query) => {
 
 const createAdminUser = async () => {
     try {
-        // Conectar a MongoDB
-        await mongoose.connect(process.env.MONGODB_URI);
-
-        console.log('✅ Conectado a MongoDB');
+        console.log('✅ Sistema de archivos JSON listo');
         console.log('');
 
         // Verificar si ya existe un usuario
@@ -65,12 +61,10 @@ const createAdminUser = async () => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const adminUser = new User({
+        const adminUser = await User.create({
             username: username,
             password: hashedPassword
         });
-
-        await adminUser.save();
 
         console.log('');
         console.log('✅ Usuario administrador creado exitosamente');
