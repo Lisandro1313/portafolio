@@ -69,7 +69,7 @@ router.get('/visits/all', async (req, res) => {
         });
     } catch (error) {
         console.error('Error obteniendo visitas:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             error: error.message,
             totalVisits: 0,
             visitors: []
