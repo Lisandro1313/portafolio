@@ -1,9 +1,11 @@
 const { Pool } = require('pg');
 
-// Usar SUPABASE_URL si existe, sino DATABASE_URL
-const connectionString = process.env.SUPABASE_URL || process.env.DATABASE_URL;
+// HARDCODED: Forzar Supabase ignorando variables de Render
+const connectionString = process.env.SUPABASE_URL || 
+                        'postgresql://postgres:Cocoliso13!@db.bqlppayfgsepdrepenxt.supabase.co:5432/postgres';
 
-console.log('🔗 Intentando conectar a:', connectionString ? connectionString.split('@')[1]?.split('/')[0] : 'NO CONFIGURADA');
+console.log('🔗 Conectando a Supabase:', connectionString.includes('supabase') ? 'SI ✅' : 'NO ❌');
+console.log('📍 Host:', connectionString.split('@')[1]?.split('/')[0] || 'desconocido');
 
 const pool = new Pool({
     connectionString: connectionString,
@@ -14,13 +16,13 @@ const pool = new Pool({
 pool.query('SELECT NOW()', (err, res) => {
     if (err) {
         console.error('❌ Error conectando a PostgreSQL:', err.message);
-        console.error('📍 Connection string:', connectionString ? 'configurada' : 'NO configurada');
     } else {
-        console.log('✅ PostgreSQL conectado exitosamente');
-        console.log('📍 Servidor:', res.rows[0].now);
+        console.log('✅ PostgreSQL conectado exitosamente a Supabase');
+        console.log('📍 Timestamp del servidor:', res.rows[0].now);
     }
 });
 
 module.exports = pool;
+
 
 
