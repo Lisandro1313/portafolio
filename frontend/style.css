@@ -441,6 +441,29 @@ body {
     padding: 3rem;
 }
 
+.no-projects-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(26, 10, 62, 0.3);
+    border-radius: 20px;
+    border: 2px dashed var(--neon-purple);
+}
+
+.no-projects-message h3 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.no-projects-message p {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+}
+
 /* ===== CONTACTO ===== */
 .contact {
     background: rgba(26, 10, 62, 0.3);

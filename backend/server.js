@@ -2,10 +2,45 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs').promises;
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
+
+// Inicializar archivos de datos
+async function initializeDataFiles() {
+    const dataDir = path.join(__dirname, 'data');
+    
+    try {
+        await fs.mkdir(dataDir, { recursive: true });
+    } catch (error) {
+        // Carpeta ya existe
+    }
+    
+    // projects.json
+    const projectsFile = path.join(dataDir, 'projects.json');
+    try {
+        await fs.access(projectsFile);
+    } catch {
+        await fs.writeFile(projectsFile, JSON.stringify([], null, 2));
+        console.log('✅ projects.json creado');
+    }
+    
+    // visits.json
+    const visitsFile = path.join(dataDir, 'visits.json');
+    try {
+        await fs.access(visitsFile);
+    } catch {
+        await fs.writeFile(visitsFile, JSON.stringify({ totalVisits: 150, visitors: [] }, null, 2));
+        console.log('✅ visits.json creado');
+    }
+}
+
+// Inicializar antes de configurar middlewares
+initializeDataFiles().then(() => {
+    console.log('✅ Sistema de archivos JSON listo');
+}).catch(console.error);
 
 // Middlewares
 app.use(cors());
@@ -19,7 +54,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Mensaje de inicio
-console.log('✅ Sistema de archivos JSON listo');
+// (removido para evitar duplicación)
 
 // Rutas
 app.use('/api/auth', require('./routes/auth'));

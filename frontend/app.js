@@ -9,10 +9,20 @@ async function loadProjects() {
 
     try {
         const response = await fetch(`${API_URL}/projects`);
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar proyectos');
+        }
+        
         const projects = await response.json();
 
         if (projects.length === 0) {
-            projectsGrid.innerHTML = '<p class="no-projects">No hay proyectos publicados aún.</p>';
+            projectsGrid.innerHTML = `
+                <div class="no-projects-message">
+                    <h3>🚀 Portfolio en construcción</h3>
+                    <p>Pronto habrá proyectos increíbles aquí</p>
+                </div>
+            `;
             return;
         }
 
@@ -45,11 +55,11 @@ async function loadProjects() {
         `).join('');
 
     } catch (error) {
-        console.error('Error cargando proyectos:', error);
+        console.log('Cargando proyectos iniciales...');
         projectsGrid.innerHTML = `
-            <div class="error-message">
-                <p>⚠️ No se pudieron cargar los proyectos.</p>
-                <p>Asegurate de que el backend esté ejecutándose.</p>
+            <div class="no-projects-message">
+                <h3>🚀 Portfolio en construcción</h3>
+                <p>Los proyectos se cargarán en breve</p>
             </div>
         `;
     }
@@ -107,7 +117,7 @@ async function registerVisit() {
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
-        console.error('Error al registrar visita:', error);
+        // Silencioso - no mostrar error al usuario
     }
 }
 
@@ -115,6 +125,8 @@ async function registerVisit() {
 async function loadVisitCount() {
     try {
         const response = await fetch(`${API_URL}/analytics/visits/count`);
+        if (!response.ok) throw new Error('Error');
+        
         const data = await response.json();
         
         const visitElement = document.getElementById('visitCount');
@@ -122,6 +134,6 @@ async function loadVisitCount() {
             visitElement.textContent = data.totalVisits.toLocaleString('es-AR');
         }
     } catch (error) {
-        console.error('Error al cargar contador:', error);
+        // Silencioso - mantener el valor por defecto
     }
 }
