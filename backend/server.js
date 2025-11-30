@@ -2,45 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const fs = require('fs').promises;
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
+const pool = require('./db/connection');
+
 const app = express();
-
-// Inicializar archivos de datos
-async function initializeDataFiles() {
-    const dataDir = path.join(__dirname, 'data');
-
-    try {
-        await fs.mkdir(dataDir, { recursive: true });
-    } catch (error) {
-        // Carpeta ya existe
-    }
-
-    // projects.json
-    const projectsFile = path.join(dataDir, 'projects.json');
-    try {
-        await fs.access(projectsFile);
-    } catch {
-        await fs.writeFile(projectsFile, JSON.stringify([], null, 2));
-        console.log('✅ projects.json creado');
-    }
-
-    // visits.json
-    const visitsFile = path.join(dataDir, 'visits.json');
-    try {
-        await fs.access(visitsFile);
-    } catch {
-        await fs.writeFile(visitsFile, JSON.stringify({ totalVisits: 150, visitors: [] }, null, 2));
-        console.log('✅ visits.json creado');
-    }
-}
-
-// Inicializar antes de configurar middlewares
-initializeDataFiles().then(() => {
-    console.log('✅ Sistema de archivos JSON listo');
-}).catch(console.error);
 
 // Middlewares
 app.use(cors());
@@ -53,9 +20,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use('/admin', express.static(path.join(__dirname, '../admin')));
 }
 
-// Mensaje de inicio
-// (removido para evitar duplicación)
-
 // Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
@@ -65,6 +29,7 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.get('/', (req, res) => {
     res.json({
         message: 'Backend Portfolio API funcionando correctamente',
+        database: 'PostgreSQL',
         endpoints: {
             auth: '/api/auth',
             projects: '/api/projects',
@@ -87,5 +52,7 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`\n🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`🗄️  Base de datos: PostgreSQL`);
+    console.log(`📊 Modo: ${process.env.NODE_ENV || 'development'}`);
 });

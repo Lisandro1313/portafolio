@@ -1,18 +1,17 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const usersFile = path.join(__dirname, '../data/users.json');
+const pool = require('../db/connection');
 
 class User {
     static async find(query = {}) {
-        const data = await fs.readFile(usersFile, 'utf8');
-        let users = JSON.parse(data);
-        
-        if (Object.keys(query).length === 0) return users;
-        
-        return users.filter(user => {
-            return Object.keys(query).every(key => user[key] === query[key]);
-        });
+        let sql = 'SELECT * FROM users';
+        const params = [];
+
+        if (query.username) {
+            sql += ' WHERE username = $1';
+            params.push(query.username);
+        }
+
+        const result = await pool.query(sql, params);
+        return result.rows;
     }
 
     static async findOne(query) {
@@ -21,40 +20,29 @@ class User {
     }
 
     static async countDocuments() {
-        const users = await this.find();
-        return users.length;
+        const result = await pool.query('SELECT COUNT(*) as count FROM users');
+        return parseInt(result.rows[0].count);
     }
 
     static async create(userData) {
-        const data = await fs.readFile(usersFile, 'utf8');
-        const users = JSON.parse(data);
+        const { username, password, role = 'admin' } = userData;
         
-        const newUser = {
-            _id: Date.now().toString(),
-            id: Date.now().toString(),
-            ...userData,
-            createdAt: new Date()
-        };
+        const sql = `
+            INSERT INTO users (username, password, role)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `;
         
-        users.push(newUser);
-        await fs.writeFile(usersFile, JSON.stringify(users, null, 2));
-        
-        return newUser;
+        const result = await pool.query(sql, [username, password, role]);
+        return result.rows[0];
     }
 
     static async deleteMany(query) {
-        const data = await fs.readFile(usersFile, 'utf8');
-        let users = JSON.parse(data);
-        
         if (Object.keys(query).length === 0) {
-            users = [];
-        } else {
-            users = users.filter(user => {
-                return !Object.keys(query).every(key => user[key] === query[key]);
-            });
+            await pool.query('DELETE FROM users');
+        } else if (query.username) {
+            await pool.query('DELETE FROM users WHERE username = $1', [query.username]);
         }
-        
-        await fs.writeFile(usersFile, JSON.stringify(users, null, 2));
     }
 
     static async save(userData) {

@@ -1,111 +1,149 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const projectsFile = path.join(__dirname, '../data/projects.json');
-
-// Inicializar archivo si no existe
-async function ensureFileExists() {
-    try {
-        await fs.access(projectsFile);
-    } catch {
-        await fs.writeFile(projectsFile, JSON.stringify([], null, 2));
-    }
-}
+const pool = require('../db/connection');
 
 class Project {
-    static async find(query = {}) {
-        await ensureFileExists();
-        try {
-            const data = await fs.readFile(projectsFile, 'utf8');
-            let projects = data ? JSON.parse(data) : [];
+    // Crear proyecto
+    static async create(projectData) {
+        const {
+            title,
+            problem,
+            solution,
+            result,
+            technologies = [],
+            status = 'En producción',
+            category = 'Web',
+            videoUrl = '',
+            published = true
+        } = projectData;
 
-            if (Object.keys(query).length === 0) return projects;
+        const sql = `
+            INSERT INTO projects (title, problem, solution, result, technologies, status, category, video_url, published)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING *
+        `;
 
-            return projects.filter(project => {
-                return Object.keys(query).every(key => project[key] === query[key]);
-            });
-        } catch (error) {
-            console.error('Error leyendo proyectos:', error);
-            return [];
-        }
+        const tech = Array.isArray(technologies) ? technologies.join(',') : technologies;
+        
+        const result_db = await pool.query(sql, [
+            title,
+            problem,
+            solution,
+            result,
+            tech,
+            status,
+            category,
+            videoUrl,
+            published
+        ]);
+
+        const project = result_db.rows[0];
+        project.technologies = project.technologies ? project.technologies.split(',') : [];
+        project._id = project.id.toString(); // Compatibilidad con frontend
+        return project;
     }
 
+    // Obtener todos los proyectos
+    static async find(query = {}) {
+        let sql = 'SELECT * FROM projects';
+        const params = [];
+
+        if (query.published !== undefined) {
+            sql += ' WHERE published = $1';
+            params.push(query.published);
+        }
+
+        sql += ' ORDER BY created_at DESC';
+
+        const result = await pool.query(sql, params);
+        
+        return result.rows.map(project => ({
+            ...project,
+            _id: project.id.toString(), // Compatibilidad con frontend
+            technologies: project.technologies ? project.technologies.split(',') : []
+        }));
+    }
+
+    // Obtener por ID
     static async findById(id) {
-        await ensureFileExists();
-        try {
-            const data = await fs.readFile(projectsFile, 'utf8');
-            const projects = data ? JSON.parse(data) : [];
-            return projects.find(p => p._id === id) || null;
-        } catch (error) {
-            console.error('Error buscando proyecto:', error);
+        const sql = 'SELECT * FROM projects WHERE id = $1';
+        const result = await pool.query(sql, [id]);
+        
+        if (result.rows.length === 0) {
             return null;
         }
+
+        const project = result.rows[0];
+        project._id = project.id.toString(); // Compatibilidad con frontend
+        project.technologies = project.technologies ? project.technologies.split(',') : [];
+        return project;
     }
 
-    static async create(projectData) {
-        await ensureFileExists();
-        try {
-            const data = await fs.readFile(projectsFile, 'utf8');
-            const projects = data ? JSON.parse(data) : [];
-
-            const newProject = {
-                _id: Date.now().toString(),
-                ...projectData,
-                createdAt: new Date().toISOString(),
-                published: projectData.published !== undefined ? projectData.published : true,
-                status: projectData.status || 'En producción',
-                category: projectData.category || 'Web',
-                images: projectData.images || [],
-                videoUrl: projectData.videoUrl || '',
-                order: projectData.order || 999 // Para ordenamiento manual
-            };
-
-            projects.push(newProject);
-            await fs.writeFile(projectsFile, JSON.stringify(projects, null, 2));
-
-            return newProject;
-        } catch (error) {
-            console.error('Error creando proyecto:', error);
-            throw error;
-        }
-    }
-
+    // Actualizar proyecto
     static async findByIdAndUpdate(id, updateData, options = {}) {
-        await ensureFileExists();
-        try {
-            const data = await fs.readFile(projectsFile, 'utf8');
-            let projects = data ? JSON.parse(data) : [];
+        const {
+            title,
+            problem,
+            solution,
+            result,
+            technologies,
+            status,
+            category,
+            videoUrl,
+            published
+        } = updateData;
 
-            const index = projects.findIndex(p => p._id === id);
-            if (index === -1) return null;
+        const tech = Array.isArray(technologies) ? technologies.join(',') : technologies;
 
-            projects[index] = { ...projects[index], ...updateData };
-            await fs.writeFile(projectsFile, JSON.stringify(projects, null, 2));
+        const sql = `
+            UPDATE projects
+            SET title = $1,
+                problem = $2,
+                solution = $3,
+                result = $4,
+                technologies = $5,
+                status = $6,
+                category = $7,
+                video_url = $8,
+                published = $9
+            WHERE id = $10
+            RETURNING *
+        `;
 
-            return projects[index];
-        } catch (error) {
-            console.error('Error actualizando proyecto:', error);
-            throw error;
+        const result_db = await pool.query(sql, [
+            title,
+            problem,
+            solution,
+            result,
+            tech,
+            status,
+            category,
+            videoUrl,
+            published,
+            id
+        ]);
+
+        if (result_db.rows.length === 0) {
+            return null;
         }
+
+        const project = result_db.rows[0];
+        project._id = project.id.toString(); // Compatibilidad con frontend
+        project.technologies = project.technologies ? project.technologies.split(',') : [];
+        return project;
     }
 
+    // Eliminar proyecto
     static async findByIdAndDelete(id) {
-        await ensureFileExists();
-        try {
-            const data = await fs.readFile(projectsFile, 'utf8');
-            let projects = data ? JSON.parse(data) : [];
-
-            const project = projects.find(p => p._id === id);
-            if (!project) return null;
-
-            projects = projects.filter(p => p._id !== id);
-            await fs.writeFile(projectsFile, JSON.stringify(projects, null, 2));
-
-            return project;
-        } catch (error) {
-            console.error('Error eliminando proyecto:', error);
-            throw error;
+        const sql = 'DELETE FROM projects WHERE id = $1 RETURNING *';
+        const result = await pool.query(sql, [id]);
+        
+        if (result.rows.length === 0) {
+            return null;
         }
+
+        const project = result.rows[0];
+        project._id = project.id.toString(); // Compatibilidad con frontend
+        project.technologies = project.technologies ? project.technologies.split(',') : [];
+        return project;
     }
 
     static sort(sortObj) {
