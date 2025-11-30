@@ -89,13 +89,16 @@ router.post('/register', async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '24h' },
             (err, token) => {
-                if (err) throw err;
+                if (err) {
+                    console.error('Error generando token:', err);
+                    return res.status(500).json({ message: 'Error generando token' });
+                }
                 res.json({ token, message: 'Usuario admin creado exitosamente' });
             }
         );
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Error del servidor');
+        console.error('Error en register:', err.message);
+        res.status(500).json({ message: 'Error del servidor', error: err.message });
     }
 });
 
@@ -130,7 +133,10 @@ router.post('/login', async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '24h' },
             (err, token) => {
-                if (err) throw err;
+                if (err) {
+                    console.error('Error generando token:', err);
+                    return res.status(500).json({ message: 'Error generando token' });
+                }
                 res.json({
                     token,
                     user: {
@@ -142,8 +148,8 @@ router.post('/login', async (req, res) => {
             }
         );
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Error del servidor');
+        console.error('Error en login:', err.message);
+        res.status(500).json({ message: 'Error del servidor', error: err.message });
     }
 });
 
