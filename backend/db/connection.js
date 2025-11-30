@@ -9,7 +9,7 @@ const pool = new Pool({
     host: 'aws-0-sa-east-1.pooler.supabase.com',
     port: 6543,
     database: 'postgres',
-    user: 'postgres.bqlppayfgsepdrepenxt',
+    user: 'postgres',
     password: 'Cocoliso13!',
     ssl: {
         rejectUnauthorized: false
