@@ -42,3 +42,6 @@ Thumbs.db
 .cache/
 tmp/
 temp/
+
+# Credenciales sensibles
+CREDENCIALES-ADMIN.txt

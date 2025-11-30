@@ -104,7 +104,7 @@ router.post('/', auth, async (req, res) => {
         res.json(project);
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Error del servidor');
+        res.status(500).json({ error: 'Error del servidor', message: err.message });
     }
 });
 
@@ -168,7 +168,7 @@ router.delete('/:id', auth, async (req, res) => {
         if (err.kind === 'ObjectId') {
             return res.status(404).json({ message: 'Proyecto no encontrado' });
         }
-        res.status(500).send('Error del servidor');
+        res.status(500).json({ error: 'Error del servidor', message: err.message });
     }
 });
 
@@ -183,7 +183,7 @@ router.post('/upload', auth, upload.single('file'), (req, res) => {
         });
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Error del servidor');
+        res.status(500).json({ error: 'Error del servidor', message: err.message });
     }
 });
 

@@ -1,9 +1,9 @@
 [
   {
-    "_id": "1764505672256",
-    "id": "1764505672256",
+    "_id": "1",
     "username": "admin",
-    "password": "$2a$10$EzpH085IRRJsJI6.NMN24OBFO7e9SM9mCMGLQ55tqdmifEynv7rJa",
-    "createdAt": "2025-11-30T12:27:52.256Z"
+    "password": "$2a$10$GBIksFIwgHss0m4LpITOWuTB0VZlXpe0rUki6DE2I505SzBwnv1Da",
+    "role": "admin",
+    "createdAt": "2025-11-30T14:57:21.141Z"
   }
 ]

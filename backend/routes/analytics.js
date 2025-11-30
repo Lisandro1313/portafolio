@@ -82,32 +82,47 @@ router.get('/visits/all', async (req, res) => {
 // Obtener estadísticas de visitas
 router.get('/visits/stats', async (req, res) => {
     try {
-        const data = await fs.readFile(VISITS_FILE, 'utf8');
-        const visitsData = JSON.parse(data);
+        let visitsData = { totalVisits: 150, visitors: [] };
+        
+        try {
+            const data = await fs.readFile(VISITS_FILE, 'utf8');
+            visitsData = JSON.parse(data);
+        } catch (error) {
+            console.log('Archivo de visitas no existe aún, usando valores por defecto');
+        }
         
         // Contar visitas por país
         const byCountry = {};
-        visitsData.visitors.forEach(v => {
-            const country = v.country || 'unknown';
-            byCountry[country] = (byCountry[country] || 0) + 1;
-        });
+        if (visitsData.visitors && Array.isArray(visitsData.visitors)) {
+            visitsData.visitors.forEach(v => {
+                const country = v.country || 'unknown';
+                byCountry[country] = (byCountry[country] || 0) + 1;
+            });
+        }
 
         // Visitas recientes (últimas 24 horas)
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const recent = visitsData.visitors.filter(v => 
-            new Date(v.timestamp) > oneDayAgo
-        );
+        const recent = visitsData.visitors && Array.isArray(visitsData.visitors) 
+            ? visitsData.visitors.filter(v => new Date(v.timestamp) > oneDayAgo)
+            : [];
 
         res.json({
-            totalVisits: visitsData.totalVisits,
-            totalRecorded: visitsData.visitors.length,
+            totalVisits: visitsData.totalVisits || 150,
+            totalRecorded: visitsData.visitors ? visitsData.visitors.length : 0,
             last24Hours: recent.length,
             byCountry,
-            recentVisitors: visitsData.visitors.slice(0, 10)
+            recentVisitors: visitsData.visitors ? visitsData.visitors.slice(0, 10) : []
         });
     } catch (error) {
         console.error('Error al obtener estadísticas:', error);
-        res.status(500).json({ error: 'Error al obtener estadísticas' });
+        res.status(500).json({ 
+            error: 'Error al obtener estadísticas',
+            totalVisits: 150,
+            totalRecorded: 0,
+            last24Hours: 0,
+            byCountry: {},
+            recentVisitors: []
+        });
     }
 });
 
