@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Admin Panel</title>
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="./admin-style.css">
 </head>
 <body>
     <nav class="admin-navbar">
         <div class="container">
             <h2>Panel de Administración</h2>
             <div class="admin-nav-links">
+                <a href="../frontend/index.html" class="btn btn-back">← Ver Portfolio</a>
                 <span id="admin-user">Admin</span>
                 <button id="logoutBtn" class="btn btn-logout">Cerrar Sesión</button>
             </div>
@@ -109,6 +110,48 @@
         </div>
     </div>
 
-    <script src="dashboard.js"></script>
+    <!-- Sección de Analytics -->
+    <div class="admin-container analytics-section">
+        <h2 class="section-title">📊 Estadísticas de Visitas</h2>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-value" id="totalVisits">-</div>
+                <div class="stat-label">Visitas Totales</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="last24h">-</div>
+                <div class="stat-label">Últimas 24h</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📍</div>
+                <div class="stat-value" id="totalCountries">-</div>
+                <div class="stat-label">Países</div>
+            </div>
+        </div>
+
+        <div class="visitors-table-container">
+            <h3>Visitantes Recientes</h3>
+            <table class="visitors-table">
+                <thead>
+                    <tr>
+                        <th>Fecha/Hora</th>
+                        <th>IP</th>
+                        <th>País</th>
+                        <th>Navegador</th>
+                    </tr>
+                </thead>
+                <tbody id="visitorsTableBody">
+                    <tr><td colspan="4">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="./dashboard.js"></script>
 </body>
 </html>

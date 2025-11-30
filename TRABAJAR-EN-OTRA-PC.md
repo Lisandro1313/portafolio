@@ -9,6 +9,7 @@ Guía para clonar y usar tu portfolio en cualquier computadora.
 ### 1️⃣ Requisitos Previos
 
 Asegurate de tener instalado:
+
 - ✅ **Node.js** (https://nodejs.org/)
 - ✅ **Git** (https://git-scm.com/)
 
@@ -88,6 +89,7 @@ node server.js
 Dejá esa terminal abierta.
 
 En tu navegador abrí:
+
 - **Portfolio:** `frontend/index.html`
 - **Panel Admin:** `admin/login.html`
 
@@ -105,6 +107,7 @@ node server.js
 ```
 
 Abrí en el navegador:
+
 - `frontend/index.html`
 - `admin/login.html`
 
@@ -138,6 +141,7 @@ Esto trae los últimos cambios que hiciste en otra PC.
 ## 🔥 FLUJO DE TRABAJO COMPLETO
 
 ### En PC 1:
+
 ```powershell
 cd portafolio
 git pull                    # Traer cambios
@@ -148,6 +152,7 @@ git push                    # Subir cambios
 ```
 
 ### En PC 2:
+
 ```powershell
 cd portafolio
 git pull                    # ¡Aparecen los cambios de PC 1!
@@ -158,6 +163,7 @@ git push
 ```
 
 ### De vuelta en PC 1:
+
 ```powershell
 git pull                    # ¡Aparecen los cambios de PC 2!
 ```
@@ -167,11 +173,13 @@ git pull                    # ¡Aparecen los cambios de PC 2!
 ## ⚠️ IMPORTANTE
 
 ### Nunca Subas a GitHub:
+
 - ❌ `.env` (ya está en .gitignore)
 - ❌ `node_modules/` (ya está en .gitignore)
 - ❌ Contraseñas o datos sensibles
 
 ### Siempre Hacé:
+
 - ✅ `git pull` antes de empezar a trabajar
 - ✅ `git push` después de terminar
 - ✅ Commits descriptivos
@@ -181,15 +189,19 @@ git pull                    # ¡Aparecen los cambios de PC 2!
 ## 🆘 PROBLEMAS COMUNES
 
 ### "Cannot connect to MongoDB"
+
 - Verificá que el string de MongoDB Atlas esté bien en `backend/.env`
 - Verificá que tengas internet (MongoDB Atlas necesita conexión)
 
 ### "Port 5001 already in use"
+
 - Cerrá otras instancias del backend
 - O cambiá el puerto en `backend/.env`
 
 ### "Git conflict"
+
 Si hay conflictos al hacer pull:
+
 ```powershell
 git stash              # Guardar cambios temporalmente
 git pull               # Traer cambios
@@ -205,6 +217,7 @@ git push
 ## 📝 RESUMEN RÁPIDO
 
 **Primera vez:**
+
 ```powershell
 git clone https://github.com/Lisandro1313/portafolio.git
 cd portafolio
@@ -215,6 +228,7 @@ npm run create-admin
 ```
 
 **Todos los días:**
+
 ```powershell
 git pull
 cd backend

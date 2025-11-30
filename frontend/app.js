@@ -1,5 +1,7 @@
-// Configuración de API
-const API_URL = 'http://localhost:5000/api';
+// Configuración de API - Detecta automáticamente el entorno
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : '/api';
 
 // Cargar proyectos desde el backend
 async function loadProjects() {
@@ -91,4 +93,35 @@ document.querySelectorAll('.section').forEach(section => {
 });
 
 // Cargar proyectos al iniciar
-document.addEventListener('DOMContentLoaded', loadProjects);
+document.addEventListener('DOMContentLoaded', () => {
+    loadProjects();
+    registerVisit();
+    loadVisitCount();
+});
+
+// Registrar visita
+async function registerVisit() {
+    try {
+        await fetch(`${API_URL}/analytics/visits/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.error('Error al registrar visita:', error);
+    }
+}
+
+// Cargar contador de visitas
+async function loadVisitCount() {
+    try {
+        const response = await fetch(`${API_URL}/analytics/visits/count`);
+        const data = await response.json();
+        
+        const visitElement = document.getElementById('visitCount');
+        if (visitElement && data.totalVisits) {
+            visitElement.textContent = data.totalVisits.toLocaleString('es-AR');
+        }
+    } catch (error) {
+        console.error('Error al cargar contador:', error);
+    }
+}

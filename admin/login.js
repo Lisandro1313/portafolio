@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api';
+// Configuración de API - Detecta automáticamente el entorno
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : '/api';
 
 const loginForm = document.getElementById('loginForm');
 const errorMessage = document.getElementById('error-message');

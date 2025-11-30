@@ -36,8 +36,9 @@ const upload = multer({
 // @access  Public
 router.get('/', async (req, res) => {
     try {
-        const projects = await Project.find({ published: true })
-            .sort({ createdAt: -1 });
+        let projects = await Project.find({ published: true });
+        // Ordenar manualmente por fecha
+        projects = projects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         res.json(projects);
     } catch (err) {
         console.error(err.message);
@@ -50,7 +51,8 @@ router.get('/', async (req, res) => {
 // @access  Private
 router.get('/all', auth, async (req, res) => {
     try {
-        const projects = await Project.find().sort({ createdAt: -1 });
+        let projects = await Project.find();
+        projects = projects.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         res.json(projects);
     } catch (err) {
         console.error(err.message);

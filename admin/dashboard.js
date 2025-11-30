@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api';
+// Configuración de API - Detecta automáticamente el entorno
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : '/api';
 
 // Verificar autenticación
 const token = localStorage.getItem('token');
@@ -28,6 +31,7 @@ window.addEventListener('click', (e) => {
 
 // Cargar proyectos al iniciar
 loadProjects();
+loadAnalytics();
 
 // Funciones
 function logout() {
@@ -180,4 +184,68 @@ function closeModal() {
     modal.classList.remove('show');
     projectForm.reset();
     editingProjectId = null;
+}
+
+// ===== ANALYTICS FUNCTIONS =====
+async function loadAnalytics() {
+    try {
+        const response = await fetch(`${API_URL}/analytics/visits/stats`);
+        const data = await response.json();
+
+        // Actualizar tarjetas de estadísticas
+        document.getElementById('totalVisits').textContent = data.totalVisits.toLocaleString('es-AR');
+        document.getElementById('last24h').textContent = data.last24Hours || 0;
+        document.getElementById('totalCountries').textContent = Object.keys(data.byCountry || {}).length;
+
+        // Cargar tabla de visitantes recientes
+        loadVisitorsTable(data.recentVisitors || []);
+    } catch (error) {
+        console.error('Error al cargar analytics:', error);
+    }
+}
+
+function loadVisitorsTable(visitors) {
+    const tableBody = document.getElementById('visitorsTableBody');
+    
+    if (visitors.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay visitas registradas aún</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = visitors.map(visitor => {
+        const date = new Date(visitor.timestamp);
+        const formattedDate = date.toLocaleDateString('es-AR', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+        });
+        const formattedTime = date.toLocaleTimeString('es-AR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+
+        // Extraer navegador del User Agent
+        const browser = getBrowserFromUA(visitor.userAgent);
+        
+        return `
+            <tr>
+                <td>${formattedDate} ${formattedTime}</td>
+                <td><code>${visitor.ip}</code></td>
+                <td><span class="country-flag">${visitor.countryFlag || '🌍'}</span>${visitor.country || 'Unknown'}</td>
+                <td>${browser}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getBrowserFromUA(userAgent) {
+    if (!userAgent) return 'Unknown';
+    
+    if (userAgent.includes('Chrome')) return '🌐 Chrome';
+    if (userAgent.includes('Firefox')) return '🦊 Firefox';
+    if (userAgent.includes('Safari')) return '🧭 Safari';
+    if (userAgent.includes('Edge')) return '🌊 Edge';
+    if (userAgent.includes('Opera')) return '🎭 Opera';
+    
+    return '🖥️ Otro';
 }

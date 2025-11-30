@@ -178,6 +178,22 @@ body {
     gap: 1.5rem;
 }
 
+.btn-back {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(6, 255, 165, 0.5);
+}
+
 .btn-logout {
     background: transparent;
     border: 2px solid var(--error-red);
@@ -393,6 +409,101 @@ body {
     color: var(--neon-cyan);
     padding: 2rem;
     font-size: 1.2rem;
+}
+
+/* ===== ANALYTICS SECTION ===== */
+.analytics-section {
+    margin-top: 3rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(26, 10, 62, 0.5);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 2px solid var(--neon-purple);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(131, 56, 236, 0.3);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.visitors-table-container {
+    background: rgba(26, 10, 62, 0.3);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 2px solid var(--neon-purple);
+}
+
+.visitors-table-container h3 {
+    color: var(--neon-cyan);
+    margin-bottom: 1rem;
+}
+
+.visitors-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.visitors-table th {
+    background: rgba(131, 56, 236, 0.2);
+    color: var(--neon-pink);
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--neon-purple);
+}
+
+.visitors-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(131, 56, 236, 0.2);
+    color: var(--text-white);
+}
+
+.visitors-table tr:hover {
+    background: rgba(131, 56, 236, 0.1);
+}
+
+.country-flag {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
 }
 
 /* ===== RESPONSIVE ===== */

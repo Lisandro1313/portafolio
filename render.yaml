@@ -1,0 +1,25 @@
+services:
+  # Backend API
+  - type: web
+    name: portafolio-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        generateValue: true
+    
+  # Frontend Static Site
+  - type: web
+    name: portafolio-frontend
+    env: static
+    buildCommand: echo "No build needed"
+    staticPublishPath: ./frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
