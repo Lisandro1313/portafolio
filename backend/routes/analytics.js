@@ -19,15 +19,15 @@ router.post('/visits/register', async (req, res) => {
         const countResult = await pool.query('SELECT COUNT(*) as total FROM visits');
         const totalVisits = parseInt(countResult.rows[0].total) || 0;
 
-        res.json({ 
-            success: true, 
-            visitCount: totalVisits 
+        res.json({
+            success: true,
+            visitCount: totalVisits
         });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
+        res.status(500).json({
+            success: false,
             visitCount: 0,
-            error: error.message 
+            error: error.message
         });
     }
 });
@@ -80,7 +80,7 @@ router.get('/visits/stats', async (req, res) => {
             recentVisits
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             error: error.message,
             totalVisits: 0,
             uniqueVisits: 0,
@@ -103,7 +103,7 @@ router.get('/visits/export', async (req, res) => {
 
         const csv = [
             'IP,País,Bandera,Navegador,Fecha',
-            ...visits.map(v => 
+            ...visits.map(v =>
                 `${v.ip},${v.country},${v.country_flag},"${v.user_agent}",${v.visited_at}`
             )
         ].join('\n');

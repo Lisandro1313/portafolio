@@ -4,6 +4,52 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// @route   GET api/auth/setup
+// @desc    Crear usuario admin automáticamente (SOLO SI NO EXISTE)
+// @access  Public
+router.get('/setup', async (req, res) => {
+    try {
+        // Verificar si ya existe un admin
+        const userCount = await User.countDocuments();
+        if (userCount >= 1) {
+            return res.json({ 
+                success: false, 
+                message: 'Ya existe un usuario administrador' 
+            });
+        }
+
+        // Crear admin con credenciales predefinidas
+        const username = 'admin';
+        const password = '3QHM/EZI5PMWyny3';
+
+        // Encriptar contraseña
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Crear usuario
+        await User.create({
+            username,
+            password: hashedPassword,
+            role: 'admin'
+        });
+
+        res.json({ 
+            success: true,
+            message: '✅ Usuario admin creado exitosamente',
+            credentials: {
+                username: 'admin',
+                password: '3QHM/EZI5PMWyny3'
+            }
+        });
+    } catch (err) {
+        console.error('Error en setup:', err.message);
+        res.status(500).json({ 
+            success: false, 
+            error: err.message 
+        });
+    }
+});
+
 // @route   POST api/auth/register
 // @desc    Crear usuario admin (usar solo una vez)
 // @access  Public (cambiar a private en producción)
@@ -23,23 +69,19 @@ router.post('/register', async (req, res) => {
             return res.status(403).json({ message: 'Ya existe un usuario administrador' });
         }
 
-        // Crear nuevo usuario
-        user = new User({
-            username,
-            password
-        });
-
         // Encriptar contraseña
         const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        await user.save();
+        await User.create({
+            username,
+            password: hashedPassword,
+            role: 'admin'
+        });
 
         // Crear token
         const payload = {
-            user: {
-                id: user.id
-            }
+            user: { id: username }
         };
 
         jwt.sign(

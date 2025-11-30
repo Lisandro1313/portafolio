@@ -26,13 +26,13 @@ class User {
 
     static async create(userData) {
         const { username, password, role = 'admin' } = userData;
-        
+
         const sql = `
             INSERT INTO users (username, password, role)
             VALUES ($1, $2, $3)
             RETURNING *
         `;
-        
+
         const result = await pool.query(sql, [username, password, role]);
         return result.rows[0];
     }

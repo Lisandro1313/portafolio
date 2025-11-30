@@ -22,7 +22,7 @@ class Project {
         `;
 
         const tech = Array.isArray(technologies) ? technologies.join(',') : technologies;
-        
+
         const result_db = await pool.query(sql, [
             title,
             problem,
@@ -54,7 +54,7 @@ class Project {
         sql += ' ORDER BY created_at DESC';
 
         const result = await pool.query(sql, params);
-        
+
         return result.rows.map(project => ({
             ...project,
             _id: project.id.toString(), // Compatibilidad con frontend
@@ -66,7 +66,7 @@ class Project {
     static async findById(id) {
         const sql = 'SELECT * FROM projects WHERE id = $1';
         const result = await pool.query(sql, [id]);
-        
+
         if (result.rows.length === 0) {
             return null;
         }
@@ -135,7 +135,7 @@ class Project {
     static async findByIdAndDelete(id) {
         const sql = 'DELETE FROM projects WHERE id = $1 RETURNING *';
         const result = await pool.query(sql, [id]);
-        
+
         if (result.rows.length === 0) {
             return null;
         }
