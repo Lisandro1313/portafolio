@@ -56,7 +56,8 @@ class Project {
                 status: projectData.status || 'En producción',
                 category: projectData.category || 'Web',
                 images: projectData.images || [],
-                videoUrl: projectData.videoUrl || ''
+                videoUrl: projectData.videoUrl || '',
+                order: projectData.order || 999 // Para ordenamiento manual
             };
             
             projects.push(newProject);

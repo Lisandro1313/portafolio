@@ -224,6 +224,27 @@ body {
     color: var(--neon-cyan);
 }
 
+.sort-select {
+    padding: 0.7rem 1.5rem;
+    background: rgba(26, 10, 62, 0.8);
+    border: 2px solid var(--neon-purple);
+    border-radius: 10px;
+    color: var(--text-white);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sort-select:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(6, 255, 165, 0.3);
+}
+
+.sort-select option {
+    background: var(--dark-card);
+    color: var(--text-white);
+}
+
 /* ===== PROJECTS ADMIN LIST ===== */
 .projects-admin-list {
     display: grid;

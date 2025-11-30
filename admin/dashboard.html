@@ -21,7 +21,15 @@
     <div class="admin-container">
         <div class="admin-header">
             <h1>Mis Proyectos</h1>
-            <button id="newProjectBtn" class="btn btn-primary">+ Nuevo Proyecto</button>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <select id="sortProjects" class="sort-select">
+                    <option value="date">Ordenar por Fecha</option>
+                    <option value="title">Ordenar por Título</option>
+                    <option value="status">Ordenar por Estado</option>
+                    <option value="category">Ordenar por Categoría</option>
+                </select>
+                <button id="newProjectBtn" class="btn btn-primary">+ Nuevo Proyecto</button>
+            </div>
         </div>
 
         <!-- Lista de proyectos -->

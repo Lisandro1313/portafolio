@@ -11,6 +11,7 @@ if (!token) {
 
 // Variables globales
 let editingProjectId = null;
+let currentProjects = [];
 const modal = document.getElementById('projectModal');
 const projectForm = document.getElementById('projectForm');
 const projectsList = document.getElementById('projects-list');
@@ -18,6 +19,7 @@ const projectsList = document.getElementById('projects-list');
 // Event Listeners
 document.getElementById('logoutBtn').addEventListener('click', logout);
 document.getElementById('newProjectBtn').addEventListener('click', openNewProjectModal);
+document.getElementById('sortProjects').addEventListener('change', handleSortChange);
 document.querySelector('.close').addEventListener('click', closeModal);
 document.getElementById('cancelBtn').addEventListener('click', closeModal);
 projectForm.addEventListener('submit', handleSubmitProject);
@@ -49,34 +51,62 @@ async function loadProjects() {
         });
 
         const projects = await response.json();
+        currentProjects = projects; // Guardar para ordenamiento
 
         if (projects.length === 0) {
             projectsList.innerHTML = '<p class="loading">No tenés proyectos aún. Creá uno nuevo para empezar.</p>';
             return;
         }
 
-        projectsList.innerHTML = projects.map(project => `
-            <div class="project-admin-card">
-                <div class="project-info-admin">
-                    <h3>${project.title}</h3>
-                    <p>${project.problem.substring(0, 100)}...</p>
-                    <div class="project-meta">
-                        <span class="badge badge-status">${project.status}</span>
-                        <span class="badge badge-category">${project.category}</span>
-                        ${!project.published ? '<span class="badge badge-unpublished">No publicado</span>' : ''}
-                    </div>
-                </div>
-                <div class="project-actions">
-                    <button class="btn-edit" onclick="editProject('${project._id}')">Editar</button>
-                    <button class="btn-delete" onclick="deleteProject('${project._id}')">Eliminar</button>
-                </div>
-            </div>
-        `).join('');
+        renderProjects(projects);
 
     } catch (error) {
         console.error('Error:', error);
         projectsList.innerHTML = '<p class="loading">Error al cargar proyectos</p>';
     }
+}
+
+function renderProjects(projects) {
+    projectsList.innerHTML = projects.map(project => `
+        <div class="project-admin-card">
+            <div class="project-info-admin">
+                <h3>${project.title}</h3>
+                <p>${project.problem.substring(0, 100)}...</p>
+                <div class="project-meta">
+                    <span class="badge badge-status">${project.status}</span>
+                    <span class="badge badge-category">${project.category}</span>
+                    ${!project.published ? '<span class="badge badge-unpublished">No publicado</span>' : ''}
+                </div>
+            </div>
+            <div class="project-actions">
+                <button class="btn-edit" onclick="editProject('${project._id}')">Editar</button>
+                <button class="btn-delete" onclick="deleteProject('${project._id}')">Eliminar</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function handleSortChange(e) {
+    const sortBy = e.target.value;
+    let sorted = [...currentProjects];
+    
+    switch(sortBy) {
+        case 'title':
+            sorted.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+        case 'status':
+            sorted.sort((a, b) => a.status.localeCompare(b.status));
+            break;
+        case 'category':
+            sorted.sort((a, b) => a.category.localeCompare(b.category));
+            break;
+        case 'date':
+        default:
+            sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            break;
+    }
+    
+    renderProjects(sorted);
 }
 
 function openNewProjectModal() {
