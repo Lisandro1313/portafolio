@@ -38,6 +38,7 @@ class Project {
         const project = result_db.rows[0];
         project.technologies = project.technologies ? project.technologies.split(',') : [];
         project._id = project.id.toString(); // Compatibilidad con frontend
+        project.videoUrl = project.video_url; // Mapear snake_case a camelCase
         return project;
     }
 
@@ -58,6 +59,7 @@ class Project {
         return result.rows.map(project => ({
             ...project,
             _id: project.id.toString(), // Compatibilidad con frontend
+            videoUrl: project.video_url, // Mapear snake_case a camelCase
             technologies: project.technologies ? project.technologies.split(',') : []
         }));
     }
@@ -73,6 +75,7 @@ class Project {
 
         const project = result.rows[0];
         project._id = project.id.toString(); // Compatibilidad con frontend
+        project.videoUrl = project.video_url; // Mapear snake_case a camelCase
         project.technologies = project.technologies ? project.technologies.split(',') : [];
         return project;
     }
@@ -127,6 +130,7 @@ class Project {
 
         const project = result_db.rows[0];
         project._id = project.id.toString(); // Compatibilidad con frontend
+        project.videoUrl = project.video_url; // Mapear snake_case a camelCase
         project.technologies = project.technologies ? project.technologies.split(',') : [];
         return project;
     }
@@ -142,6 +146,7 @@ class Project {
 
         const project = result.rows[0];
         project._id = project.id.toString(); // Compatibilidad con frontend
+        project.videoUrl = project.video_url; // Mapear snake_case a camelCase
         project.technologies = project.technologies ? project.technologies.split(',') : [];
         return project;
     }
