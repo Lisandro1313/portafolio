@@ -11,13 +11,13 @@ const app = express();
 // Inicializar archivos de datos
 async function initializeDataFiles() {
     const dataDir = path.join(__dirname, 'data');
-    
+
     try {
         await fs.mkdir(dataDir, { recursive: true });
     } catch (error) {
         // Carpeta ya existe
     }
-    
+
     // projects.json
     const projectsFile = path.join(dataDir, 'projects.json');
     try {
@@ -26,7 +26,7 @@ async function initializeDataFiles() {
         await fs.writeFile(projectsFile, JSON.stringify([], null, 2));
         console.log('✅ projects.json creado');
     }
-    
+
     // visits.json
     const visitsFile = path.join(dataDir, 'visits.json');
     try {
@@ -78,7 +78,7 @@ if (process.env.NODE_ENV === 'production') {
     app.get('/admin/*', (req, res) => {
         res.sendFile(path.join(__dirname, '../admin', req.path.replace('/admin', '')));
     });
-    
+
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../frontend/index.html'));
     });

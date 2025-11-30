@@ -3,7 +3,7 @@ const path = require('path');
 
 async function initializeData() {
     const dataDir = path.join(__dirname, '../data');
-    
+
     // Crear carpeta data si no existe
     try {
         await fs.mkdir(dataDir, { recursive: true });
@@ -11,7 +11,7 @@ async function initializeData() {
     } catch (error) {
         console.log('Carpeta data ya existe');
     }
-    
+
     // Inicializar projects.json
     const projectsFile = path.join(dataDir, 'projects.json');
     try {
@@ -21,7 +21,7 @@ async function initializeData() {
         await fs.writeFile(projectsFile, JSON.stringify([], null, 2));
         console.log('✅ projects.json creado');
     }
-    
+
     // Inicializar visits.json
     const visitsFile = path.join(dataDir, 'visits.json');
     try {
@@ -35,7 +35,7 @@ async function initializeData() {
         await fs.writeFile(visitsFile, JSON.stringify(initialData, null, 2));
         console.log('✅ visits.json creado con contador en 150');
     }
-    
+
     console.log('🚀 Inicialización de datos completada\n');
 }
 

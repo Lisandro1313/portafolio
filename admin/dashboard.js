@@ -1,6 +1,6 @@
 // Configuración de API - Detecta automáticamente el entorno
-const API_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:5000/api' 
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
     : '/api';
 
 // Verificar autenticación
@@ -89,8 +89,8 @@ function renderProjects(projects) {
 function handleSortChange(e) {
     const sortBy = e.target.value;
     let sorted = [...currentProjects];
-    
-    switch(sortBy) {
+
+    switch (sortBy) {
         case 'title':
             sorted.sort((a, b) => a.title.localeCompare(b.title));
             break;
@@ -105,7 +105,7 @@ function handleSortChange(e) {
             sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             break;
     }
-    
+
     renderProjects(sorted);
 }
 
@@ -236,7 +236,7 @@ async function loadAnalytics() {
 
 function loadVisitorsTable(visitors) {
     const tableBody = document.getElementById('visitorsTableBody');
-    
+
     if (visitors.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay visitas registradas aún</td></tr>';
         return;
@@ -244,22 +244,22 @@ function loadVisitorsTable(visitors) {
 
     // Mostrar las últimas 50 visitas (puedes cambiar este número)
     const visitsToShow = visitors.slice(0, 50);
-    
+
     tableBody.innerHTML = visitsToShow.map(visitor => {
         const date = new Date(visitor.timestamp);
-        const formattedDate = date.toLocaleDateString('es-AR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric' 
+        const formattedDate = date.toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
         });
-        const formattedTime = date.toLocaleTimeString('es-AR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        const formattedTime = date.toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit'
         });
 
         // Extraer navegador del User Agent
         const browser = getBrowserFromUA(visitor.userAgent);
-        
+
         return `
             <tr>
                 <td>${formattedDate} ${formattedTime}</td>
@@ -269,7 +269,7 @@ function loadVisitorsTable(visitors) {
             </tr>
         `;
     }).join('');
-    
+
     // Agregar contador de visitas totales vs mostradas
     if (visitors.length > 50) {
         tableBody.innerHTML += `
@@ -284,12 +284,12 @@ function loadVisitorsTable(visitors) {
 
 function getBrowserFromUA(userAgent) {
     if (!userAgent) return 'Unknown';
-    
+
     if (userAgent.includes('Chrome')) return '🌐 Chrome';
     if (userAgent.includes('Firefox')) return '🦊 Firefox';
     if (userAgent.includes('Safari')) return '🧭 Safari';
     if (userAgent.includes('Edge')) return '🌊 Edge';
     if (userAgent.includes('Opera')) return '🎭 Opera';
-    
+
     return '🖥️ Otro';
 }

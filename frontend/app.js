@@ -1,6 +1,6 @@
 // Configuración de API - Detecta automáticamente el entorno
-const API_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:5000/api' 
+const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
     : '/api';
 
 // Cargar proyectos desde el backend
@@ -9,11 +9,11 @@ async function loadProjects() {
 
     try {
         const response = await fetch(`${API_URL}/projects`);
-        
+
         if (!response.ok) {
             throw new Error('Error al cargar proyectos');
         }
-        
+
         const projects = await response.json();
 
         if (projects.length === 0) {
@@ -29,6 +29,19 @@ async function loadProjects() {
         projectsGrid.innerHTML = projects.map(project => `
             <div class="project-card">
                 <h3>${project.title}</h3>
+                
+                ${project.videoUrl ? `
+                    <div class="project-video">
+                        <iframe 
+                            width="100%" 
+                            height="315" 
+                            src="${getEmbedUrl(project.videoUrl)}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                ` : ''}
                 
                 <div class="project-info">
                     <h4>Problema:</h4>
@@ -63,6 +76,33 @@ async function loadProjects() {
             </div>
         `;
     }
+}
+
+// Convertir URLs de YouTube/Vimeo a embed
+function getEmbedUrl(url) {
+    if (!url) return '';
+    
+    // YouTube
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        const videoId = url.includes('youtu.be') 
+            ? url.split('youtu.be/')[1]?.split('?')[0]
+            : url.split('v=')[1]?.split('&')[0];
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Vimeo
+    if (url.includes('vimeo.com')) {
+        const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+        return `https://player.vimeo.com/video/${videoId}`;
+    }
+    
+    // Loom
+    if (url.includes('loom.com')) {
+        const videoId = url.split('share/')[1]?.split('?')[0];
+        return `https://www.loom.com/embed/${videoId}`;
+    }
+    
+    return url; // Si es otro tipo, usar la URL directa
 }
 
 // Smooth scroll para navegación
@@ -126,9 +166,9 @@ async function loadVisitCount() {
     try {
         const response = await fetch(`${API_URL}/analytics/visits/count`);
         if (!response.ok) throw new Error('Error');
-        
+
         const data = await response.json();
-        
+
         const visitElement = document.getElementById('visitCount');
         if (visitElement && data.totalVisits) {
             visitElement.textContent = data.totalVisits.toLocaleString('es-AR');

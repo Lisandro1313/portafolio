@@ -21,10 +21,10 @@ router.get('/visits/count', async (req, res) => {
 router.post('/visits/register', async (req, res) => {
     try {
         // Obtener IP del visitante
-        const ip = req.headers['x-forwarded-for']?.split(',')[0] || 
-                   req.socket.remoteAddress || 
-                   'unknown';
-        
+        const ip = req.headers['x-forwarded-for']?.split(',')[0] ||
+            req.socket.remoteAddress ||
+            'unknown';
+
         // Leer archivo de visitas
         let visitsData = { totalVisits: 150, visitors: [] };
         try {
@@ -57,10 +57,10 @@ router.post('/visits/register', async (req, res) => {
         // Guardar archivo
         await fs.writeFile(VISITS_FILE, JSON.stringify(visitsData, null, 2));
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             totalVisits: visitsData.totalVisits,
-            visitor 
+            visitor
         });
     } catch (error) {
         console.error('Error al registrar visita:', error);
@@ -84,14 +84,14 @@ router.get('/visits/all', async (req, res) => {
 router.get('/visits/stats', async (req, res) => {
     try {
         let visitsData = { totalVisits: 150, visitors: [] };
-        
+
         try {
             const data = await fs.readFile(VISITS_FILE, 'utf8');
             visitsData = JSON.parse(data);
         } catch (error) {
             console.log('Archivo de visitas no existe aún, usando valores por defecto');
         }
-        
+
         // Contar visitas por país
         const byCountry = {};
         if (visitsData.visitors && Array.isArray(visitsData.visitors)) {
@@ -103,7 +103,7 @@ router.get('/visits/stats', async (req, res) => {
 
         // Visitas recientes (últimas 24 horas)
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const recent = visitsData.visitors && Array.isArray(visitsData.visitors) 
+        const recent = visitsData.visitors && Array.isArray(visitsData.visitors)
             ? visitsData.visitors.filter(v => new Date(v.timestamp) > oneDayAgo)
             : [];
 
@@ -116,7 +116,7 @@ router.get('/visits/stats', async (req, res) => {
         });
     } catch (error) {
         console.error('Error al obtener estadísticas:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Error al obtener estadísticas',
             totalVisits: 150,
             totalRecorded: 0,
@@ -132,21 +132,21 @@ router.get('/visits/export', async (req, res) => {
     try {
         const data = await fs.readFile(VISITS_FILE, 'utf8');
         const visitsData = JSON.parse(data);
-        
+
         // Crear CSV
         let csv = 'Fecha,Hora,IP,País,Navegador\n';
-        
+
         if (visitsData.visitors && Array.isArray(visitsData.visitors)) {
             visitsData.visitors.forEach(v => {
                 const date = new Date(v.timestamp);
                 const dateStr = date.toLocaleDateString('es-AR');
                 const timeStr = date.toLocaleTimeString('es-AR');
                 const browser = v.userAgent ? v.userAgent.split(' ')[0] : 'Unknown';
-                
+
                 csv += `${dateStr},${timeStr},"${v.ip}","${v.country || 'Unknown'}","${browser}"\n`;
             });
         }
-        
+
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=visitas.csv');
         res.send(csv);
