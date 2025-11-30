@@ -1,17 +1,15 @@
 const { Pool } = require('pg');
 
-// HARDCODED: Forzar Supabase ignorando variables de Render
-const SUPABASE_CONNECTION = 'postgresql://postgres:Cocoliso13!@db.bqlppayfgsepdrepenxt.supabase.co:5432/postgres';
+// Usar el POOLER de Supabase (puerto 6543) en lugar de session mode (5432)
+console.log('🔗 Conectando a Supabase Transaction Pooler (IPv4 compatible)');
+console.log('📍 Host: aws-0-sa-east-1.pooler.supabase.com:6543');
 
-console.log('🔗 Conectando a Supabase hardcodeado');
-console.log('📍 Host: db.bqlppayfgsepdrepenxt.supabase.co:5432');
-
-// Crear pool con configuración explícita
+// Crear pool con configuración explícita usando POOLER
 const pool = new Pool({
-    host: 'db.bqlppayfgsepdrepenxt.supabase.co',
-    port: 5432,
+    host: 'aws-0-sa-east-1.pooler.supabase.com',
+    port: 6543,
     database: 'postgres',
-    user: 'postgres',
+    user: 'postgres.bqlppayfgsepdrepenxt',
     password: 'Cocoliso13!',
     ssl: {
         rejectUnauthorized: false
@@ -27,12 +25,13 @@ pool.query('SELECT NOW()', (err, res) => {
         console.error('❌ Error conectando a Supabase:', err.message);
         console.error('❌ Código de error:', err.code);
     } else {
-        console.log('✅ PostgreSQL conectado exitosamente a Supabase');
+        console.log('✅ PostgreSQL conectado exitosamente a Supabase Pooler');
         console.log('📍 Timestamp del servidor:', res.rows[0].now);
     }
 });
 
 module.exports = pool;
+
 
 
 
