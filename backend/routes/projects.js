@@ -88,7 +88,7 @@ router.post('/', auth, async (req, res) => {
     try {
         const { title, problem, solution, result, technologies, status, category, videoUrl, published } = req.body;
 
-        const newProject = new Project({
+        const projectData = {
             title,
             problem,
             solution,
@@ -98,9 +98,9 @@ router.post('/', auth, async (req, res) => {
             category,
             videoUrl,
             published
-        });
+        };
 
-        const project = await newProject.save();
+        const project = await Project.create(projectData);
         res.json(project);
     } catch (err) {
         console.error(err.message);

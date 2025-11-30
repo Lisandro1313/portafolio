@@ -212,7 +212,10 @@ function loadVisitorsTable(visitors) {
         return;
     }
 
-    tableBody.innerHTML = visitors.map(visitor => {
+    // Mostrar las últimas 50 visitas (puedes cambiar este número)
+    const visitsToShow = visitors.slice(0, 50);
+    
+    tableBody.innerHTML = visitsToShow.map(visitor => {
         const date = new Date(visitor.timestamp);
         const formattedDate = date.toLocaleDateString('es-AR', { 
             day: '2-digit', 
@@ -236,6 +239,17 @@ function loadVisitorsTable(visitors) {
             </tr>
         `;
     }).join('');
+    
+    // Agregar contador de visitas totales vs mostradas
+    if (visitors.length > 50) {
+        tableBody.innerHTML += `
+            <tr style="background: rgba(131, 56, 236, 0.2);">
+                <td colspan="4" style="text-align: center; font-weight: bold;">
+                    Mostrando últimas 50 de ${visitors.length} visitas totales
+                </td>
+            </tr>
+        `;
+    }
 }
 
 function getBrowserFromUA(userAgent) {

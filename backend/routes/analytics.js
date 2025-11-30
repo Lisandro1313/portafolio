@@ -48,10 +48,11 @@ router.post('/visits/register', async (req, res) => {
 
         visitsData.visitors.unshift(visitor); // Agregar al inicio
 
-        // Mantener solo últimas 1000 visitas
-        if (visitsData.visitors.length > 1000) {
-            visitsData.visitors = visitsData.visitors.slice(0, 1000);
-        }
+        // GUARDAR TODAS LAS VISITAS - Sin límite
+        // (Comentado el límite de 1000)
+        // if (visitsData.visitors.length > 1000) {
+        //     visitsData.visitors = visitsData.visitors.slice(0, 1000);
+        // }
 
         // Guardar archivo
         await fs.writeFile(VISITS_FILE, JSON.stringify(visitsData, null, 2));
@@ -123,6 +124,35 @@ router.get('/visits/stats', async (req, res) => {
             byCountry: {},
             recentVisitors: []
         });
+    }
+});
+
+// Descargar todas las visitas en CSV
+router.get('/visits/export', async (req, res) => {
+    try {
+        const data = await fs.readFile(VISITS_FILE, 'utf8');
+        const visitsData = JSON.parse(data);
+        
+        // Crear CSV
+        let csv = 'Fecha,Hora,IP,País,Navegador\n';
+        
+        if (visitsData.visitors && Array.isArray(visitsData.visitors)) {
+            visitsData.visitors.forEach(v => {
+                const date = new Date(v.timestamp);
+                const dateStr = date.toLocaleDateString('es-AR');
+                const timeStr = date.toLocaleTimeString('es-AR');
+                const browser = v.userAgent ? v.userAgent.split(' ')[0] : 'Unknown';
+                
+                csv += `${dateStr},${timeStr},"${v.ip}","${v.country || 'Unknown'}","${browser}"\n`;
+            });
+        }
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=visitas.csv');
+        res.send(csv);
+    } catch (error) {
+        console.error('Error al exportar visitas:', error);
+        res.status(500).json({ error: 'Error al exportar visitas' });
     }
 });
 

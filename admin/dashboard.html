@@ -135,7 +135,12 @@
         </div>
 
         <div class="visitors-table-container">
-            <h3>Visitantes Recientes</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>Visitantes Recientes</h3>
+                <a href="/api/analytics/visits/export" class="btn btn-primary" download>
+                    📥 Descargar Todas (CSV)
+                </a>
+            </div>
             <table class="visitors-table">
                 <thead>
                     <tr>
