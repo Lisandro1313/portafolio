@@ -20,13 +20,13 @@ if (process.env.NODE_ENV === 'production') {
     app.use('/admin', express.static(path.join(__dirname, '../admin')));
 }
 
-// Rutas
+// Rutas API (DEBEN IR ANTES del catch-all)
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/analytics', require('./routes/analytics'));
 
 // Ruta de prueba
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.json({
         message: 'Backend Portfolio API funcionando correctamente',
         database: 'PostgreSQL',
@@ -38,12 +38,13 @@ app.get('/', (req, res) => {
     });
 });
 
-// Servir frontend en producción
+// Servir frontend en producción (DEBE IR DESPUÉS de las rutas API)
 if (process.env.NODE_ENV === 'production') {
     app.get('/admin/*', (req, res) => {
         res.sendFile(path.join(__dirname, '../admin', req.path.replace('/admin', '')));
     });
 
+    // Catch-all route - debe ser la ÚLTIMA
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../frontend/index.html'));
     });
