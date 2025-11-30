@@ -53,12 +53,15 @@ async function loadProjects() {
                     <h4>Resultado:</h4>
                     <p>${project.result}</p>
                     
-                    ${project.technologies ? `
+                    ${project.technologies && project.technologies.length > 0 ? `
                         <h4>Tecnologías:</h4>
                         <div class="project-tags">
-                            ${project.technologies.split(',').map(tech =>
-            `<span class="tag">${tech.trim()}</span>`
-        ).join('')}
+                            ${(Array.isArray(project.technologies) 
+                                ? project.technologies 
+                                : project.technologies.split(',')
+                            ).map(tech =>
+                                `<span class="tag">${tech.trim()}</span>`
+                            ).join('')}
                         </div>
                     ` : ''}
                 </div>
@@ -81,27 +84,27 @@ async function loadProjects() {
 // Convertir URLs de YouTube/Vimeo a embed
 function getEmbedUrl(url) {
     if (!url) return '';
-    
+
     // YouTube
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        const videoId = url.includes('youtu.be') 
+        const videoId = url.includes('youtu.be')
             ? url.split('youtu.be/')[1]?.split('?')[0]
             : url.split('v=')[1]?.split('&')[0];
         return `https://www.youtube.com/embed/${videoId}`;
     }
-    
+
     // Vimeo
     if (url.includes('vimeo.com')) {
         const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
         return `https://player.vimeo.com/video/${videoId}`;
     }
-    
+
     // Loom
     if (url.includes('loom.com')) {
         const videoId = url.split('share/')[1]?.split('?')[0];
         return `https://www.loom.com/embed/${videoId}`;
     }
-    
+
     return url; // Si es otro tipo, usar la URL directa
 }
 

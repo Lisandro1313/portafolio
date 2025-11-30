@@ -5,6 +5,7 @@
 **Los archivos JSON en Render se borran en cada deploy**
 
 Render usa almacenamiento efímero. Cada vez que:
+
 - Haces `git push`
 - Render redeploya automáticamente
 - Se crea un nuevo contenedor
@@ -15,6 +16,7 @@ Render usa almacenamiento efímero. Cada vez que:
 ## ✅ SOLUCIÓN: PostgreSQL en Render (GRATIS)
 
 ### Ventajas:
+
 - ✅ **Gratis** - 256 MB de almacenamiento
 - ✅ **Persistente** - Los datos NO se borran
 - ✅ **Backups automáticos**
@@ -42,6 +44,7 @@ Render usa almacenamiento efímero. Cada vez que:
 ### 2️⃣ Conectar Backend a PostgreSQL
 
 En tu Web Service (backend):
+
 1. Ve a "Environment"
 2. Agrega nueva variable:
    ```
@@ -51,6 +54,7 @@ En tu Web Service (backend):
 ### 3️⃣ Instalar dependencias
 
 Actualizar `backend/package.json`:
+
 ```json
 {
   "dependencies": {
@@ -69,6 +73,7 @@ Actualizar `backend/package.json`:
 ### 4️⃣ Crear tabla de proyectos
 
 Archivo: `backend/db/setup.sql`
+
 ```sql
 CREATE TABLE IF NOT EXISTS projects (
     id SERIAL PRIMARY KEY,
@@ -105,21 +110,25 @@ CREATE TABLE IF NOT EXISTS users (
 ### 5️⃣ Script de conexión
 
 Crear `backend/db/connection.js`:
+
 ```javascript
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  connectionString: process.env.DATABASE_URL,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 // Test de conexión
-pool.query('SELECT NOW()', (err, res) => {
-    if (err) {
-        console.error('❌ Error conectando a PostgreSQL:', err);
-    } else {
-        console.log('✅ PostgreSQL conectado:', res.rows[0].now);
-    }
+pool.query("SELECT NOW()", (err, res) => {
+  if (err) {
+    console.error("❌ Error conectando a PostgreSQL:", err);
+  } else {
+    console.log("✅ PostgreSQL conectado:", res.rows[0].now);
+  }
 });
 
 module.exports = pool;
@@ -128,47 +137,66 @@ module.exports = pool;
 ### 6️⃣ Actualizar modelos
 
 Ejemplo `backend/models/Project.js`:
+
 ```javascript
-const pool = require('../db/connection');
+const pool = require("../db/connection");
 
 class Project {
-    static async find(query = {}) {
-        try {
-            let sql = 'SELECT * FROM projects';
-            const params = [];
-            
-            if (query.published !== undefined) {
-                sql += ' WHERE published = $1';
-                params.push(query.published);
-            }
-            
-            sql += ' ORDER BY created_at DESC';
-            
-            const result = await pool.query(sql, params);
-            return result.rows;
-        } catch (error) {
-            console.error('Error:', error);
-            return [];
-        }
+  static async find(query = {}) {
+    try {
+      let sql = "SELECT * FROM projects";
+      const params = [];
+
+      if (query.published !== undefined) {
+        sql += " WHERE published = $1";
+        params.push(query.published);
+      }
+
+      sql += " ORDER BY created_at DESC";
+
+      const result = await pool.query(sql, params);
+      return result.rows;
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
     }
-    
-    static async create(data) {
-        const { title, problem, solution, result, technologies, status, category, videoUrl, published } = data;
-        
-        const sql = `
+  }
+
+  static async create(data) {
+    const {
+      title,
+      problem,
+      solution,
+      result,
+      technologies,
+      status,
+      category,
+      videoUrl,
+      published,
+    } = data;
+
+    const sql = `
             INSERT INTO projects (title, problem, solution, result, technologies, status, category, video_url, published)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *
         `;
-        
-        const result = await pool.query(sql, [
-            title, problem, solution, result, technologies, status, category, videoUrl, published
-        ]);
-        
-        return result.rows[0];
-    }
-    
-    // ... más métodos
+
+    const result = await pool.query(sql, [
+      title,
+      problem,
+      solution,
+      result,
+      technologies,
+      status,
+      category,
+      videoUrl,
+      published,
+    ]);
+
+    return result.rows[0];
+  }
+
+  // ... más métodos
 }
 
 module.exports = Project;
@@ -177,11 +205,13 @@ module.exports = Project;
 ### 7️⃣ Ejecutar setup.sql
 
 Opción A - **Desde Render Dashboard**:
+
 1. Ve a tu PostgreSQL database
 2. Click "Connect" → "psql"
 3. Copia y pega el contenido de `setup.sql`
 
 Opción B - **Desde tu PC**:
+
 ```bash
 # Instalar psql (PostgreSQL client)
 # Luego conectarte con External Database URL
@@ -194,36 +224,38 @@ psql [External Database URL]
 ### 8️⃣ Crear usuario admin inicial
 
 Script: `backend/scripts/create-admin-postgres.js`
+
 ```javascript
-const bcrypt = require('bcryptjs');
-const pool = require('../db/connection');
+const bcrypt = require("bcryptjs");
+const pool = require("../db/connection");
 
 async function createAdmin() {
-    const password = 'TuNuevaContraseñaSegura123!';
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-    const sql = `
+  const password = "TuNuevaContraseñaSegura123!";
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const sql = `
         INSERT INTO users (username, password, role)
         VALUES ($1, $2, $3)
         ON CONFLICT (username) DO UPDATE
         SET password = $2
         RETURNING username
     `;
-    
-    const result = await pool.query(sql, ['admin', hashedPassword, 'admin']);
-    
-    console.log('✅ Usuario admin creado/actualizado');
-    console.log('Username:', result.rows[0].username);
-    console.log('Password:', password);
-    
-    process.exit(0);
+
+  const result = await pool.query(sql, ["admin", hashedPassword, "admin"]);
+
+  console.log("✅ Usuario admin creado/actualizado");
+  console.log("Username:", result.rows[0].username);
+  console.log("Password:", password);
+
+  process.exit(0);
 }
 
 createAdmin();
 ```
 
 Ejecutar:
+
 ```bash
 cd backend
 node scripts/create-admin-postgres.js
@@ -234,6 +266,7 @@ node scripts/create-admin-postgres.js
 ## 🚀 DEPLOY
 
 1. Commit y push:
+
 ```bash
 git add .
 git commit -m "Migrado a PostgreSQL"
@@ -269,17 +302,21 @@ Si PostgreSQL te parece complicado, **Supabase** es más fácil:
 ## ❓ FAQ
 
 **¿Cuánto cuesta?**
+
 - Render PostgreSQL: Gratis (256 MB)
 - Supabase: Gratis ilimitado (con límites razonables)
 
 **¿Se me van a borrar los datos ahora?**
+
 - NO, con PostgreSQL los datos son permanentes
 
 **¿Es difícil migrar?**
+
 - Toma ~30 minutos
 - Pero vale la pena para no perder datos
 
 **¿Puedo mantener JSON files?**
+
 - Sí, pero se borrarán en cada deploy
 - Solo sirve para desarrollo local
 
