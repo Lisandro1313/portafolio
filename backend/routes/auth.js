@@ -50,6 +50,49 @@ router.get('/setup', async (req, res) => {
     }
 });
 
+// @route   GET api/auth/reset-admin
+// @desc    Resetear contraseña del admin (USAR SOLO CUANDO OLVIDES LA CONTRASEÑA)
+// @access  Public (ELIMINAR ESTE ENDPOINT DESPUÉS DE USAR)
+router.get('/reset-admin', async (req, res) => {
+    try {
+        const username = 'admin';
+        const newPassword = '3QHM/EZI5PMWyny3';
+
+        // Encriptar nueva contraseña
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Actualizar contraseña en la base de datos
+        const pool = require('../db/connection');
+        const result = await pool.query(
+            'UPDATE users SET password = $1 WHERE username = $2 RETURNING username',
+            [hashedPassword, username]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Usuario admin no encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: '✅ Contraseña del admin reseteada exitosamente',
+            credentials: {
+                username: 'admin',
+                password: '3QHM/EZI5PMWyny3'
+            }
+        });
+    } catch (err) {
+        console.error('Error reseteando contraseña:', err.message);
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 // @route   POST api/auth/register
 // @desc    Crear usuario admin (usar solo una vez)
 // @access  Public (cambiar a private en producción)
