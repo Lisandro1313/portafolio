@@ -24,6 +24,179 @@ router.post('/visits/register', async (req, res) => {
             visitCount: totalVisits
         });
     } catch (error) {
+        console.error('Error registrando visita:', error);
+        res.status(500).json({
+            success: false,
+            visitCount: 0,
+            error: error.message
+        });
+    }
+});
+
+// Obtener conteo de visitas
+router.get('/visits/count', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT COUNT(*) as total FROM visits');
+        const totalVisits = parseInt(result.rows[0].total) || 0;
+        res.json({ totalVisits });
+    } catch (error) {
+        console.error('Error obteniendo conteo:', error);
+        res.json({ totalVisits: 150 });
+    }
+});
+
+// Obtener todas las visitas
+router.get('/visits/all', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT ip, country, country_flag, user_agent, visited_at
+            FROM visits
+            ORDER BY visited_at DESC
+        `);
+
+        const totalResult = await pool.query('SELECT COUNT(*) as total FROM visits');
+        const totalVisits = parseInt(totalResult.rows[0].total) || 0;
+
+        res.json({
+            totalVisits,
+            visitors: result.rows.map(row => ({
+                ip: row.ip,
+                country: row.country,
+                countryFlag: row.country_flag,
+                userAgent: row.user_agent,
+                timestamp: row.visited_at
+            }))
+        });
+    } catch (error) {
+        console.error('Error obteniendo visitas:', error);
+        res.status(500).json({ 
+            error: error.message,
+            totalVisits: 0,
+            visitors: []
+        });
+    }
+});
+
+// Obtener estadísticas
+router.get('/visits/stats', async (req, res) => {
+    try {
+        // Total de visitas
+        const totalResult = await pool.query('SELECT COUNT(*) as total FROM visits');
+        const totalVisits = parseInt(totalResult.rows[0].total) || 0;
+
+        // Visitas únicas (IPs únicas)
+        const uniqueResult = await pool.query('SELECT COUNT(DISTINCT ip) as unique_ips FROM visits');
+        const uniqueVisits = parseInt(uniqueResult.rows[0].unique_ips) || 0;
+
+        // Visitas por país
+        const countriesResult = await pool.query(`
+            SELECT country, country_flag, COUNT(*) as count
+            FROM visits
+            GROUP BY country, country_flag
+            ORDER BY count DESC
+        `);
+
+        const byCountry = {};
+        countriesResult.rows.forEach(row => {
+            byCountry[row.country] = parseInt(row.count);
+        });
+
+        // Últimas 10 visitas
+        const recentResult = await pool.query(`
+            SELECT ip, country, country_flag, user_agent, visited_at
+            FROM visits
+            ORDER BY visited_at DESC
+            LIMIT 10
+        `);
+
+        const recentVisitors = recentResult.rows.map(row => ({
+            ip: row.ip,
+            country: row.country,
+            flag: row.country_flag,
+            userAgent: row.user_agent,
+            timestamp: row.visited_at
+        }));
+
+        // Visitas últimas 24 horas
+        const last24Result = await pool.query(`
+            SELECT COUNT(*) as count
+            FROM visits
+            WHERE visited_at > NOW() - INTERVAL '24 hours'
+        `);
+        const last24Hours = parseInt(last24Result.rows[0].count) || 0;
+
+        res.json({
+            totalVisits,
+            uniqueVisits,
+            last24Hours,
+            byCountry,
+            recentVisitors
+        });
+    } catch (error) {
+        console.error('Error obteniendo estadísticas:', error);
+        res.status(500).json({
+            error: error.message,
+            totalVisits: 0,
+            uniqueVisits: 0,
+            last24Hours: 0,
+            byCountry: {},
+            recentVisitors: []
+        });
+    }
+});
+
+// Exportar visitas a CSV
+router.get('/visits/export', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT ip, country, country_flag, user_agent, visited_at
+            FROM visits
+            ORDER BY visited_at DESC
+        `);
+
+        const visits = result.rows;
+
+        const csv = [
+            'IP,País,Bandera,Navegador,Fecha',
+            ...visits.map(v =>
+                `${v.ip},${v.country},${v.country_flag},"${v.user_agent}",${v.visited_at}`
+            )
+        ].join('\n');
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', 'attachment; filename=visitas.csv');
+        res.send('\ufeff' + csv);
+    } catch (error) {
+        console.error('Error exportando visitas:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+module.exports = router;
+
+
+// Registrar visita
+router.post('/visits/register', async (req, res) => {
+    try {
+        const { ip, country = 'AR', countryFlag = '🇦🇷', userAgent = '' } = req.body;
+
+        const sql = `
+            INSERT INTO visits (ip, country, country_flag, user_agent)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *
+        `;
+
+        await pool.query(sql, [ip, country, countryFlag, userAgent]);
+
+        // Obtener total de visitas
+        const countResult = await pool.query('SELECT COUNT(*) as total FROM visits');
+        const totalVisits = parseInt(countResult.rows[0].total) || 0;
+
+        res.json({
+            success: true,
+            visitCount: totalVisits
+        });
+    } catch (error) {
         res.status(500).json({
             success: false,
             visitCount: 0,

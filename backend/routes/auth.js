@@ -12,9 +12,9 @@ router.get('/setup', async (req, res) => {
         // Verificar si ya existe un admin
         const userCount = await User.countDocuments();
         if (userCount >= 1) {
-            return res.json({ 
-                success: false, 
-                message: 'Ya existe un usuario administrador' 
+            return res.json({
+                success: false,
+                message: 'Ya existe un usuario administrador'
             });
         }
 
@@ -33,7 +33,7 @@ router.get('/setup', async (req, res) => {
             role: 'admin'
         });
 
-        res.json({ 
+        res.json({
             success: true,
             message: '✅ Usuario admin creado exitosamente',
             credentials: {
@@ -43,9 +43,9 @@ router.get('/setup', async (req, res) => {
         });
     } catch (err) {
         console.error('Error en setup:', err.message);
-        res.status(500).json({ 
-            success: false, 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            error: err.message
         });
     }
 });
