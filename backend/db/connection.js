@@ -4,8 +4,8 @@ const { Pool } = require('pg');
 console.log('🔗 Conectando a Supabase Transaction Pooler (IPv4 compatible)');
 console.log('📍 Connection string format');
 
-// CONNECTION STRING COMPLETO desde Supabase (Transaction Pooler - IPv4 compatible)
-const connectionString = 'postgresql://postgres.bqlppayfgsepdrepenxt:Cocoliso13!@aws-0-us-west-2.pooler.supabase.com:6543/postgres';
+// CONNECTION STRING con password URL-encoded (! = %21)
+const connectionString = 'postgresql://postgres.bqlppayfgsepdrepenxt:Cocoliso13%21@aws-0-us-west-2.pooler.supabase.com:6543/postgres';
 
 // Crear pool con connection string completo
 const pool = new Pool({
