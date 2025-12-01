@@ -6,6 +6,7 @@ const API_URL = window.location.hostname === 'localhost'
 // Variables del carrusel
 let allProjects = [];
 let currentProjectIndex = 0;
+let autoPlayInterval = null;
 
 // Cargar proyectos desde el backend
 async function loadProjects() {
@@ -79,11 +80,11 @@ function renderCarousel() {
                 ${project.technologies && project.technologies.length > 0 ? `
                     <div class="project-tags">
                         ${(Array.isArray(project.technologies)
-                            ? project.technologies
-                            : project.technologies.split(',')
-                        ).map(tech =>
-                            `<span class="tag">${tech.trim()}</span>`
-                        ).join('')}
+                ? project.technologies
+                : project.technologies.split(',')
+            ).map(tech =>
+                `<span class="tag">${tech.trim()}</span>`
+            ).join('')}
                     </div>
                 ` : ''}
                 
@@ -110,7 +111,7 @@ function renderDots() {
 // Renderizar lista de proyectos
 function renderProjectsList() {
     const projectsList = document.getElementById('projectsList');
-    
+
     projectsList.innerHTML = allProjects.map((project, index) => `
         <div class="list-item ${index === currentProjectIndex ? 'active' : ''}" 
              onclick="goToProject(${index})">
@@ -124,10 +125,12 @@ function renderProjectsList() {
 }
 
 // Navegar a un proyecto específico
+// Navegar a un proyecto específico
 function goToProject(index) {
     currentProjectIndex = index;
     renderCarousel();
     renderProjectsList();
+    resetAutoPlay(); // Reiniciar auto-play al hacer click en la lista
 }
 
 // Configurar controles del carrusel
@@ -139,12 +142,14 @@ function setupCarouselControls() {
         currentProjectIndex = (currentProjectIndex - 1 + allProjects.length) % allProjects.length;
         renderCarousel();
         renderProjectsList();
+        resetAutoPlay(); // Reiniciar auto-play al interactuar
     };
 
     nextBtn.onclick = () => {
         currentProjectIndex = (currentProjectIndex + 1) % allProjects.length;
         renderCarousel();
         renderProjectsList();
+        resetAutoPlay(); // Reiniciar auto-play al interactuar
     };
 
     // Soporte para teclado
@@ -152,12 +157,39 @@ function setupCarouselControls() {
         if (e.key === 'ArrowLeft') prevBtn.click();
         if (e.key === 'ArrowRight') nextBtn.click();
     });
+
+    // Auto-play cada 5 segundos
+    startAutoPlay();
+}
+
+// Iniciar auto-play del carrusel
+function startAutoPlay() {
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+    
+    autoPlayInterval = setInterval(() => {
+        currentProjectIndex = (currentProjectIndex + 1) % allProjects.length;
+        renderCarousel();
+        renderProjectsList();
+    }, 5000); // Cambia cada 5 segundos
+}
+
+// Reiniciar auto-play
+function resetAutoPlay() {
+    startAutoPlay();
+}
+
+// Pausar auto-play cuando el usuario interactúa
+function pauseAutoPlay() {
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+    }
 }
 
 // Mostrar detalles completos del proyecto (modal)
 function showProjectDetails(index) {
     const project = allProjects[index];
-    
+
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -200,11 +232,11 @@ function showProjectDetails(index) {
                         <h3>🛠️ Tecnologías</h3>
                         <div class="project-tags">
                             ${(Array.isArray(project.technologies)
-                                ? project.technologies
-                                : project.technologies.split(',')
-                            ).map(tech =>
-                                `<span class="tag">${tech.trim()}</span>`
-                            ).join('')}
+                ? project.technologies
+                : project.technologies.split(',')
+            ).map(tech =>
+                `<span class="tag">${tech.trim()}</span>`
+            ).join('')}
                         </div>
                     </div>
                 ` : ''}
@@ -213,9 +245,9 @@ function showProjectDetails(index) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Cerrar al hacer clic fuera del modal
     modal.onclick = (e) => {
         if (e.target === modal) modal.remove();
@@ -321,3 +353,147 @@ async function loadVisitCount() {
         // Silencioso - mantener el valor por defecto
     }
 }
+
+// ===== ANIMACIÓN DE ESTRELLAS EN CANVAS =====
+const canvas = document.getElementById('starsCanvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Ajustar canvas al redimensionar ventana
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initStars();
+});
+
+// Clase para las estrellas
+class Star {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random();
+        this.fadeSpeed = (Math.random() - 0.5) * 0.01;
+        this.color = this.getRandomColor();
+    }
+
+    getRandomColor() {
+        const colors = [
+            'rgba(255, 0, 110, ',  // neon-pink
+            'rgba(6, 255, 165, ',  // neon-cyan
+            'rgba(131, 56, 236, ', // neon-purple
+            'rgba(255, 255, 255, ' // white
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.opacity += this.fadeSpeed;
+
+        // Rebote en los bordes
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+        // Fade in/out
+        if (this.opacity <= 0 || this.opacity >= 1) this.fadeSpeed *= -1;
+    }
+
+    draw() {
+        ctx.fillStyle = this.color + this.opacity + ')';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Clase para estrellas fugaces
+class ShootingStar {
+    constructor() {
+        this.reset();
+    }
+
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -100;
+        this.length = Math.random() * 80 + 10;
+        this.speed = Math.random() * 10 + 6;
+        this.opacity = Math.random() * 0.5 + 0.5;
+        this.angle = Math.PI / 4; // 45 grados
+    }
+
+    update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+
+        // Resetear cuando sale de la pantalla
+        if (this.y > canvas.height + 100) {
+            this.reset();
+        }
+    }
+
+    draw() {
+        const gradient = ctx.createLinearGradient(
+            this.x, this.y,
+            this.x - Math.cos(this.angle) * this.length,
+            this.y - Math.sin(this.angle) * this.length
+        );
+        gradient.addColorStop(0, `rgba(6, 255, 165, ${this.opacity})`);
+        gradient.addColorStop(1, 'rgba(6, 255, 165, 0)');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(
+            this.x - Math.cos(this.angle) * this.length,
+            this.y - Math.sin(this.angle) * this.length
+        );
+        ctx.stroke();
+    }
+}
+
+let stars = [];
+let shootingStars = [];
+
+function initStars() {
+    stars = [];
+    shootingStars = [];
+    
+    // Crear estrellas estáticas
+    for (let i = 0; i < 100; i++) {
+        stars.push(new Star());
+    }
+
+    // Crear estrellas fugaces
+    for (let i = 0; i < 3; i++) {
+        shootingStars.push(new ShootingStar());
+    }
+}
+
+function animateStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Animar y dibujar estrellas estáticas
+    stars.forEach(star => {
+        star.update();
+        star.draw();
+    });
+
+    // Animar y dibujar estrellas fugaces
+    shootingStars.forEach(star => {
+        star.update();
+        star.draw();
+    });
+
+    requestAnimationFrame(animateStars);
+}
+
+// Iniciar animación de estrellas
+initStars();
+animateStars();
