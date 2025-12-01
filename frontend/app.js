@@ -63,6 +63,7 @@ function renderCarousel() {
             ${project.videoUrl ? `
                 <div class="project-video">
                     <iframe 
+                        id="carouselVideo"
                         width="100%" 
                         height="400" 
                         src="${getEmbedUrl(project.videoUrl)}" 
@@ -94,6 +95,9 @@ function renderCarousel() {
             </div>
         </div>
     `;
+
+    // Configurar listener para el iframe de YouTube
+    setupVideoListener();
 
     // Actualizar dots
     renderDots();
@@ -186,6 +190,31 @@ function pauseAutoPlay() {
     }
 }
 
+// Configurar listener para detectar reproducción del video
+function setupVideoListener() {
+    // Escuchar mensajes de YouTube API
+    window.addEventListener('message', function(event) {
+        if (event.origin !== 'https://www.youtube.com') return;
+        
+        try {
+            const data = JSON.parse(event.data);
+            
+            // Estado 1 = reproduciendo, Estado 2 = pausado
+            if (data.event === 'infoDelivery' && data.info && data.info.playerState !== undefined) {
+                if (data.info.playerState === 1) {
+                    // Video reproduciéndose - pausar carrusel
+                    pauseAutoPlay();
+                } else if (data.info.playerState === 2) {
+                    // Video en pausa - reanudar carrusel
+                    resetAutoPlay();
+                }
+            }
+        } catch (e) {
+            // Ignorar errores de parsing
+        }
+    });
+}
+
 // Mostrar detalles completos del proyecto (modal)
 function showProjectDetails(index) {
     const project = allProjects[index];
@@ -248,9 +277,22 @@ function showProjectDetails(index) {
 
     document.body.appendChild(modal);
 
+    // Pausar carrusel mientras el modal está abierto
+    pauseAutoPlay();
+
     // Cerrar al hacer clic fuera del modal
     modal.onclick = (e) => {
-        if (e.target === modal) modal.remove();
+        if (e.target === modal) {
+            modal.remove();
+            resetAutoPlay();
+        }
+    };
+
+    // Reanudar carrusel cuando se cierra el modal
+    const closeBtn = modal.querySelector('.modal-close');
+    closeBtn.onclick = () => {
+        modal.remove();
+        resetAutoPlay();
     };
 }
 
@@ -263,7 +305,7 @@ function getEmbedUrl(url) {
         const videoId = url.includes('youtu.be')
             ? url.split('youtu.be/')[1]?.split('?')[0]
             : url.split('v=')[1]?.split('&')[0];
-        return `https://www.youtube.com/embed/${videoId}`;
+        return `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
     }
 
     // Vimeo
@@ -597,7 +639,7 @@ class CosmicExplosion {
         if (!this.active) return;
 
         const opacity = 1 - (this.frame / this.maxFrame);
-        
+
         this.particles.forEach(p => {
             ctx.fillStyle = p.color + opacity + ')';
             ctx.beginPath();
