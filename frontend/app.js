@@ -3,9 +3,14 @@ const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api'
     : '/api';
 
+// Variables del carrusel
+let allProjects = [];
+let currentProjectIndex = 0;
+
 // Cargar proyectos desde el backend
 async function loadProjects() {
-    const projectsGrid = document.getElementById('projects-grid');
+    const carouselMain = document.getElementById('carouselMain');
+    const projectsList = document.getElementById('projectsList');
 
     try {
         const response = await fetch(`${API_URL}/projects`);
@@ -15,70 +20,206 @@ async function loadProjects() {
         }
 
         const projects = await response.json();
+        allProjects = projects;
 
         if (projects.length === 0) {
-            projectsGrid.innerHTML = `
+            carouselMain.innerHTML = `
                 <div class="no-projects-message">
                     <h3>🚀 Portfolio en construcción</h3>
                     <p>Pronto habrá proyectos increíbles aquí</p>
                 </div>
             `;
+            projectsList.innerHTML = '<p class="empty-list">Sin proyectos aún</p>';
             return;
         }
 
-        projectsGrid.innerHTML = projects.map(project => `
-            <div class="project-card">
-                <h3>${project.title}</h3>
-                
-                ${project.videoUrl ? `
-                    <div class="project-video">
-                        <iframe 
-                            width="100%" 
-                            height="315" 
-                            src="${getEmbedUrl(project.videoUrl)}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                ` : ''}
-                
-                <div class="project-info">
-                    <h4>Problema:</h4>
-                    <p>${project.problem}</p>
-                    
-                    <h4>Solución:</h4>
-                    <p>${project.solution}</p>
-                    
-                    <h4>Resultado:</h4>
-                    <p>${project.result}</p>
-                    
-                    ${project.technologies && project.technologies.length > 0 ? `
-                        <h4>Tecnologías:</h4>
-                        <div class="project-tags">
-                            ${(Array.isArray(project.technologies) 
-                                ? project.technologies 
-                                : project.technologies.split(',')
-                            ).map(tech =>
-                                `<span class="tag">${tech.trim()}</span>`
-                            ).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-                
-                <span class="project-status">${project.status}</span>
-            </div>
-        `).join('');
+        // Renderizar carrusel y lista
+        renderCarousel();
+        renderProjectsList();
+        setupCarouselControls();
 
     } catch (error) {
-        console.log('Cargando proyectos iniciales...');
-        projectsGrid.innerHTML = `
+        console.log('Error cargando proyectos:', error);
+        carouselMain.innerHTML = `
             <div class="no-projects-message">
                 <h3>🚀 Portfolio en construcción</h3>
                 <p>Los proyectos se cargarán en breve</p>
             </div>
         `;
+        projectsList.innerHTML = '<p class="empty-list">Cargando...</p>';
     }
+}
+
+// Renderizar carrusel principal
+function renderCarousel() {
+    const carouselMain = document.getElementById('carouselMain');
+    const project = allProjects[currentProjectIndex];
+
+    if (!project) return;
+
+    carouselMain.innerHTML = `
+        <div class="carousel-card">
+            ${project.videoUrl ? `
+                <div class="project-video">
+                    <iframe 
+                        width="100%" 
+                        height="400" 
+                        src="${getEmbedUrl(project.videoUrl)}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            ` : ''}
+            
+            <div class="carousel-content">
+                <h3>${project.title}</h3>
+                <p class="project-description">${project.problem}</p>
+                
+                ${project.technologies && project.technologies.length > 0 ? `
+                    <div class="project-tags">
+                        ${(Array.isArray(project.technologies)
+                            ? project.technologies
+                            : project.technologies.split(',')
+                        ).map(tech =>
+                            `<span class="tag">${tech.trim()}</span>`
+                        ).join('')}
+                    </div>
+                ` : ''}
+                
+                <button class="btn btn-details" onclick="showProjectDetails(${currentProjectIndex})">
+                    Ver detalles completos →
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Actualizar dots
+    renderDots();
+}
+
+// Renderizar dots del carrusel
+function renderDots() {
+    const dotsContainer = document.getElementById('carouselDots');
+    dotsContainer.innerHTML = allProjects.map((_, index) => `
+        <span class="dot ${index === currentProjectIndex ? 'active' : ''}" 
+              onclick="goToProject(${index})"></span>
+    `).join('');
+}
+
+// Renderizar lista de proyectos
+function renderProjectsList() {
+    const projectsList = document.getElementById('projectsList');
+    
+    projectsList.innerHTML = allProjects.map((project, index) => `
+        <div class="list-item ${index === currentProjectIndex ? 'active' : ''}" 
+             onclick="goToProject(${index})">
+            <span class="list-icon">🔹</span>
+            <div class="list-content">
+                <h4>${project.title}</h4>
+                <p>${project.problem.substring(0, 60)}...</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Navegar a un proyecto específico
+function goToProject(index) {
+    currentProjectIndex = index;
+    renderCarousel();
+    renderProjectsList();
+}
+
+// Configurar controles del carrusel
+function setupCarouselControls() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    prevBtn.onclick = () => {
+        currentProjectIndex = (currentProjectIndex - 1 + allProjects.length) % allProjects.length;
+        renderCarousel();
+        renderProjectsList();
+    };
+
+    nextBtn.onclick = () => {
+        currentProjectIndex = (currentProjectIndex + 1) % allProjects.length;
+        renderCarousel();
+        renderProjectsList();
+    };
+
+    // Soporte para teclado
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+    });
+}
+
+// Mostrar detalles completos del proyecto (modal)
+function showProjectDetails(index) {
+    const project = allProjects[index];
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close" onclick="this.parentElement.parentElement.remove()">✕</button>
+            
+            <h2>${project.title}</h2>
+            
+            ${project.videoUrl ? `
+                <div class="project-video">
+                    <iframe 
+                        width="100%" 
+                        height="400" 
+                        src="${getEmbedUrl(project.videoUrl)}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            ` : ''}
+            
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h3>🎯 Problema</h3>
+                    <p>${project.problem}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>💡 Solución</h3>
+                    <p>${project.solution}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>✅ Resultado</h3>
+                    <p>${project.result}</p>
+                </div>
+                
+                ${project.technologies && project.technologies.length > 0 ? `
+                    <div class="detail-section">
+                        <h3>🛠️ Tecnologías</h3>
+                        <div class="project-tags">
+                            ${(Array.isArray(project.technologies)
+                                ? project.technologies
+                                : project.technologies.split(',')
+                            ).map(tech =>
+                                `<span class="tag">${tech.trim()}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="project-status-badge">${project.status}</div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+    };
 }
 
 // Convertir URLs de YouTube/Vimeo a embed

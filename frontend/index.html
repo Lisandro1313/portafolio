@@ -48,30 +48,20 @@
             <div class="about-content">
                 <div class="about-text">
                     <p class="intro-large">
-                        Desarrollo software que hoy está en uso real en <strong>gestión pública, salud, educación y automatización</strong>.
+                        Soy desarrollador full-stack especializado en <strong>sistemas web, automatización e inteligencia artificial</strong>. Transformo ideas en productos digitales funcionales, sólidos y listos para usarse en el mundo real.
                     </p>
                     <p>
-                        Trabajo en aplicaciones completas: frontend, backend, bases de datos, autenticación, 
-                        automatización con IA. De la idea al producto funcionando.
+                        Trabajo en todo el proceso: desde el análisis del problema, el diseño de la solución, el desarrollo del sistema, hasta su despliegue final. Mi enfoque no es solo que una aplicación "funcione", sino que realmente resuelva una necesidad concreta.
                     </p>
-                    
-                    <div class="skills-highlight">
-                        <div class="skill-item">
-                            <span class="icon">⚡</span>
-                            <h4>Enfoque práctico</h4>
-                            <p>Código limpio, soluciones que escalan</p>
-                        </div>
-                        <div class="skill-item">
-                            <span class="icon">🎯</span>
-                            <h4>Producto real</h4>
-                            <p>Sistemas en producción, no solo demos</p>
-                        </div>
-                        <div class="skill-item">
-                            <span class="icon">🚀</span>
-                            <h4>Stack completo</h4>
-                            <p>Frontend, Backend, DB, Deploy</p>
-                        </div>
-                    </div>
+                    <p>
+                        He desarrollado plataformas educativas, sistemas de gestión, automatizaciones administrativas, aplicaciones web y soluciones con inteligencia artificial, siempre orientadas a optimizar procesos, reducir errores y ahorrar tiempo.
+                    </p>
+                    <p>
+                        Soy autodidacta, constante y detallista. Me interesa entender a fondo cada proyecto antes de escribir una sola línea de código, porque creo que un buen sistema nace de un buen análisis.
+                    </p>
+                    <p class="cta-text">
+                        Si tenés una idea, un negocio que quiera digitalizarse o un proceso que necesite automatización, podemos convertirlo en una solución real.
+                    </p>
 
                     <div class="looking-for">
                         <h3>🔍 Buscando oportunidades</h3>
@@ -87,9 +77,24 @@
     <section id="projects" class="section projects">
         <div class="container">
             <h2 class="section-title">Proyectos</h2>
-            <div id="projects-grid" class="projects-grid">
-                <!-- Los proyectos se cargan dinámicamente desde el backend -->
-                <div class="loading">Cargando proyectos...</div>
+            <div class="projects-layout">
+                <!-- Carrusel Principal -->
+                <div class="carousel-container">
+                    <button class="carousel-btn prev" id="prevBtn">❮</button>
+                    <div class="carousel-main" id="carouselMain">
+                        <div class="loading">Cargando proyectos...</div>
+                    </div>
+                    <button class="carousel-btn next" id="nextBtn">❯</button>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                </div>
+
+                <!-- Lista de Proyectos -->
+                <div class="projects-list">
+                    <h3>📋 Todos los proyectos</h3>
+                    <div id="projectsList" class="list-items">
+                        <div class="loading-small">Cargando...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
