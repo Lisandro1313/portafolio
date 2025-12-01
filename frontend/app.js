@@ -165,7 +165,7 @@ function setupCarouselControls() {
 // Iniciar auto-play del carrusel
 function startAutoPlay() {
     if (autoPlayInterval) clearInterval(autoPlayInterval);
-    
+
     autoPlayInterval = setInterval(() => {
         currentProjectIndex = (currentProjectIndex + 1) % allProjects.length;
         renderCarousel();
@@ -458,13 +458,194 @@ class ShootingStar {
     }
 }
 
+// Clase para agujero negro
+class BlackHole {
+    constructor() {
+        this.active = false;
+        this.x = 0;
+        this.y = 0;
+        this.radius = 0;
+        this.maxRadius = 150;
+        this.growing = true;
+        this.absorbedStars = [];
+    }
+
+    activate() {
+        this.active = true;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = 0;
+        this.growing = true;
+        this.absorbedStars = [];
+    }
+
+    update() {
+        if (!this.active) return;
+
+        // Crecer y luego encogerse
+        if (this.growing) {
+            this.radius += 3;
+            if (this.radius >= this.maxRadius) {
+                this.growing = false;
+            }
+        } else {
+            this.radius -= 2;
+            if (this.radius <= 0) {
+                this.active = false;
+                // Devolver estrellas absorbidas
+                this.absorbedStars.forEach(star => {
+                    star.x = this.x + (Math.random() - 0.5) * 200;
+                    star.y = this.y + (Math.random() - 0.5) * 200;
+                });
+            }
+        }
+
+        // Absorber estrellas cercanas
+        stars.forEach(star => {
+            const dx = star.x - this.x;
+            const dy = star.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < this.radius && this.growing) {
+                // Atraer estrellas hacia el centro
+                star.x += -dx * 0.1;
+                star.y += -dy * 0.1;
+
+                if (distance < 20) {
+                    this.absorbedStars.push(star);
+                }
+            }
+        });
+    }
+
+    draw() {
+        if (!this.active) return;
+
+        // Dibujar agujero negro
+        const gradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.radius
+        );
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
+        gradient.addColorStop(0.5, 'rgba(131, 56, 236, 0.6)');
+        gradient.addColorStop(1, 'rgba(131, 56, 236, 0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Anillo de acreción
+        ctx.strokeStyle = `rgba(255, 0, 110, ${0.8 * (this.radius / this.maxRadius)})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+}
+
+// Clase para explosión cósmica
+class CosmicExplosion {
+    constructor() {
+        this.active = false;
+        this.x = 0;
+        this.y = 0;
+        this.particles = [];
+        this.frame = 0;
+        this.maxFrame = 60;
+    }
+
+    activate() {
+        this.active = true;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.frame = 0;
+        this.particles = [];
+
+        // Crear partículas de explosión
+        for (let i = 0; i < 50; i++) {
+            const angle = (Math.PI * 2 * i) / 50;
+            this.particles.push({
+                x: this.x,
+                y: this.y,
+                vx: Math.cos(angle) * (Math.random() * 5 + 2),
+                vy: Math.sin(angle) * (Math.random() * 5 + 2),
+                color: ['rgba(255, 0, 110, ', 'rgba(6, 255, 165, ', 'rgba(131, 56, 236, '][Math.floor(Math.random() * 3)],
+                size: Math.random() * 3 + 1
+            });
+        }
+    }
+
+    update() {
+        if (!this.active) return;
+
+        this.frame++;
+        if (this.frame >= this.maxFrame) {
+            this.active = false;
+            return;
+        }
+
+        this.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.98; // Fricción
+            p.vy *= 0.98;
+        });
+    }
+
+    draw() {
+        if (!this.active) return;
+
+        const opacity = 1 - (this.frame / this.maxFrame);
+        
+        this.particles.forEach(p => {
+            ctx.fillStyle = p.color + opacity + ')';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Flash central
+        if (this.frame < 10) {
+            const flashOpacity = 1 - (this.frame / 10);
+            const gradient = ctx.createRadialGradient(
+                this.x, this.y, 0,
+                this.x, this.y, 100
+            );
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${flashOpacity})`);
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 100, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+}
+
 let stars = [];
 let shootingStars = [];
+let blackHole = new BlackHole();
+let cosmicExplosion = new CosmicExplosion();
+
+// Activar agujero negro cada 20 segundos
+setInterval(() => {
+    if (!blackHole.active) {
+        blackHole.activate();
+    }
+}, 20000);
+
+// Activar explosión cósmica cada 25 segundos
+setInterval(() => {
+    if (!cosmicExplosion.active) {
+        cosmicExplosion.activate();
+    }
+}, 25000);
 
 function initStars() {
     stars = [];
     shootingStars = [];
-    
+
     // Crear estrellas estáticas
     for (let i = 0; i < 100; i++) {
         stars.push(new Star());
@@ -490,6 +671,14 @@ function animateStars() {
         star.update();
         star.draw();
     });
+
+    // Actualizar y dibujar agujero negro
+    blackHole.update();
+    blackHole.draw();
+
+    // Actualizar y dibujar explosión cósmica
+    cosmicExplosion.update();
+    cosmicExplosion.draw();
 
     requestAnimationFrame(animateStars);
 }

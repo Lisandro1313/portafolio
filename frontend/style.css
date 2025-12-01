@@ -212,6 +212,31 @@ body::before {
     animation: fadeInUp 1s ease;
 }
 
+.hero-identity {
+    margin: 2rem 0 1rem;
+    animation: fadeInUp 1s ease;
+}
+
+.hero-name {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--neon-cyan);
+    text-shadow: 
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 30px var(--neon-cyan);
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.hero-title {
+    font-size: 1.2rem;
+    color: var(--neon-purple);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
 .hero-subtitle {
     font-size: 1.3rem;
     color: var(--neon-cyan);
